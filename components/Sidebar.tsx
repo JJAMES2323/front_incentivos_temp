@@ -9,8 +9,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import BadgeIcon from '@mui/icons-material/Badge';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -23,9 +24,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import { NavItem, UserRole } from '@/lib/types';
 import { useTheme } from '@/contexts/ThemeContext';
 
-const DRAWER_WIDTH = 280;
+const DRAWER_WIDTH = 272;
 
 const navItems: NavItem[] = [
+  {
+    label: 'Inicio',
+    path: '/',
+    icon: <HomeIcon />,
+    roles: ['ADMIN', 'RH', 'PRODUCCION'],
+  },
   {
     label: 'Usuarios',
     path: '/usuarios',
@@ -45,7 +52,7 @@ const navItems: NavItem[] = [
     roles: ['ADMIN', 'PRODUCCION'],
   },
   {
-    label: 'Órdenes',
+    label: 'Ordenes',
     path: '/ordenes',
     icon: <AssignmentIcon />,
     roles: ['ADMIN', 'PRODUCCION'],
@@ -78,10 +85,15 @@ interface SidebarProps {
 
 export default function Sidebar({ open, onClose, variant }: SidebarProps) {
   const pathname = usePathname();
-  const { hasRole } = useAuth();
+  const { hasRole, user } = useAuth();
   const { mode } = useTheme();
 
   const filteredNavItems = navItems.filter((item) => hasRole(item.roles as UserRole[]));
+
+  const getInitials = (name?: string) => {
+    if (!name?.trim()) return 'U';
+    return name.split(' ').map((n) => n[0]).filter(Boolean).join('').toUpperCase().slice(0, 2) || 'U';
+  };
 
   const drawerContent = (
     <Box
@@ -89,51 +101,72 @@ export default function Sidebar({ open, onClose, variant }: SidebarProps) {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        background: mode === 'dark'
-          ? 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)'
-          : 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+        bgcolor: mode === 'dark' ? '#0d0f1a' : '#ffffff',
+        position: 'relative',
       }}
     >
+      {/* Logo */}
+      <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: 2,
-          p: 2.5,
-          borderBottom: mode === 'dark'
-            ? '1px solid rgba(71, 85, 105, 0.4)'
-            : '1px solid rgba(226, 232, 240, 0.6)',
+          gap: 1.5,
+          px: 2.5,
+          py: 2.5,
+          borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+          cursor: 'pointer',
+          transition: 'background 0.2s ease',
+          '&:hover': {
+            bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.05)' : 'rgba(108, 92, 231, 0.02)',
+          },
         }}
       >
         <Box
           sx={{
-            width: 48,
-            height: 48,
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)',
+            width: 40,
+            height: 40,
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              transform: 'rotate(-5deg) scale(1.1)',
-            },
+            boxShadow: '0 4px 12px rgba(108, 92, 231, 0.3)',
+            flexShrink: 0,
           }}
         >
-          <FactoryIcon sx={{ color: 'white', fontSize: 24 }} />
+          <FactoryIcon sx={{ color: 'white', fontSize: 20 }} />
         </Box>
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
-            Producción
+        <Box sx={{ minWidth: 0 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: 800,
+              fontSize: '0.95rem',
+              letterSpacing: '-0.02em',
+              lineHeight: 1.2,
+              color: mode === 'dark' ? '#e8eaf0' : '#1a1d2e',
+            }}
+          >
+            ProduccionApp
           </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-            Sistema de Gestión
+          <Typography
+            variant="caption"
+            sx={{
+              color: mode === 'dark' ? '#8b90a8' : '#7c8098',
+              fontWeight: 500,
+              fontSize: '0.7rem',
+              letterSpacing: '0.03em',
+            }}
+          >
+            Sistema de Gestion
           </Typography>
         </Box>
       </Box>
+      </Link>
 
-      <List sx={{ flex: 1, px: 2, py: 2 }}>
+      {/* Navigation */}
+      <List sx={{ flex: 1, px: 1.5, py: 2 }}>
         {filteredNavItems.map((item, index) => {
           const isActive = pathname === item.path;
           return (
@@ -141,8 +174,8 @@ export default function Sidebar({ open, onClose, variant }: SidebarProps) {
               key={item.path}
               disablePadding
               sx={{
-                mb: 0.5,
-                animation: `slideInLeft 0.3s ease ${index * 0.05}s both`,
+                mb: 0.25,
+                animation: `slideInLeft 0.4s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.04}s both`,
               }}
             >
               <ListItemButton
@@ -150,71 +183,64 @@ export default function Sidebar({ open, onClose, variant }: SidebarProps) {
                 href={item.path}
                 onClick={variant === 'temporary' ? onClose : undefined}
                 sx={{
-                  borderRadius: '12px',
-                  py: 1.2,
+                  borderRadius: '10px',
+                  py: 1.1,
                   px: 1.5,
+                  minHeight: 42,
                   position: 'relative',
                   overflow: 'hidden',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
                   '&::before': isActive
                     ? {
                         content: '""',
                         position: 'absolute',
                         left: 0,
-                        top: 0,
-                        bottom: 0,
-                        width: '4px',
-                        background: 'linear-gradient(180deg, #6366f1, #ec4899)',
-                        borderRadius: '0 4px 4px 0',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: 3,
+                        height: '60%',
+                        background: 'linear-gradient(180deg, #6c5ce7, #a29bfe)',
+                        borderRadius: '0 3px 3px 0',
                       }
                     : {},
                   '&:hover': {
                     bgcolor: mode === 'dark'
-                      ? 'rgba(99, 102, 241, 0.1)'
-                      : 'rgba(99, 102, 241, 0.08)',
-                    transform: 'translateX(4px)',
-                    '& .nav-icon': {
-                      transform: 'scale(1.15)',
-                    },
-                    '& .nav-label': {
-                      fontWeight: 600,
-                    },
+                      ? 'rgba(108, 92, 231, 0.08)'
+                      : 'rgba(108, 92, 231, 0.05)',
+                    transform: 'translateX(2px)',
                   },
                   ...(isActive && {
                     bgcolor: mode === 'dark'
-                      ? 'rgba(99, 102, 241, 0.15)'
-                      : 'rgba(99, 102, 241, 0.08)',
-                    '& .nav-icon': {
-                      color: '#6366f1',
-                    },
-                    '& .nav-label': {
-                      fontWeight: 700,
-                      color: mode === 'dark' ? '#818cf8' : '#4f46e5',
-                    },
+                      ? 'rgba(108, 92, 231, 0.12)'
+                      : 'rgba(108, 92, 231, 0.07)',
                   }),
                 }}
               >
                 <ListItemIcon
-                  className="nav-icon"
                   sx={{
-                    minWidth: 42,
-                    color: isActive ? '#6366f1' : 'text.secondary',
+                    minWidth: 38,
+                    color: isActive
+                      ? mode === 'dark' ? '#a78bfa' : '#6c5ce7'
+                      : mode === 'dark' ? '#8b90a8' : '#7c8098',
                     transition: 'all 0.3s ease',
+                    '& .MuiSvgIcon-root': {
+                      fontSize: '1.2rem',
+                    },
                   }}
                 >
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText
                   primary={item.label}
-                  className="nav-label"
                   sx={{
                     '& .MuiListItemText-primary': {
-                      fontSize: '0.9rem',
-                      fontWeight: 500,
+                      fontSize: '0.84rem',
+                      fontWeight: isActive ? 700 : 500,
                       color: isActive
-                        ? mode === 'dark' ? '#818cf8' : '#4f46e5'
-                        : 'text.primary',
+                        ? mode === 'dark' ? '#e8eaf0' : '#1a1d2e'
+                        : mode === 'dark' ? '#8b90a8' : '#7c8098',
                       transition: 'all 0.3s ease',
+                      letterSpacing: '-0.01em',
                     },
                   }}
                 />
@@ -224,32 +250,66 @@ export default function Sidebar({ open, onClose, variant }: SidebarProps) {
         })}
       </List>
 
-      <Divider
-        sx={{
-          borderColor: mode === 'dark'
-            ? 'rgba(71, 85, 105, 0.4)'
-            : 'rgba(226, 232, 240, 0.6)',
-        }}
-      />
-      <Box sx={{ p: 2.5 }}>
+      {/* User info */}
+      <Box sx={{ px: 2, pb: 2, pt: 1 }}>
         <Box
           sx={{
-            p: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+            p: 1.5,
             borderRadius: '12px',
-            background: mode === 'dark'
-              ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15))'
-              : 'linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08))',
-            border: mode === 'dark'
-              ? '1px solid rgba(99, 102, 241, 0.2)'
-              : '1px solid rgba(99, 102, 241, 0.15)',
+            bgcolor: mode === 'dark' ? 'rgba(30, 34, 53, 0.6)' : 'rgba(240, 241, 245, 0.8)',
+            border: `1px solid ${mode === 'dark' ? 'rgba(38, 42, 64, 0.6)' : 'rgba(228, 230, 239, 0.8)'}`,
           }}
         >
-          <Typography variant="caption" sx={{ fontWeight: 600, display: 'block', mb: 0.5 }}>
-            Versión 1.0
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-            Sistema de Gestión de Producción
-          </Typography>
+          <Avatar
+            sx={{
+              width: 34,
+              height: 34,
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
+              flexShrink: 0,
+            }}
+          >
+            {getInitials(user?.name)}
+          </Avatar>
+          <Box sx={{ minWidth: 0, flex: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                lineHeight: 1.3,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                color: mode === 'dark' ? '#e8eaf0' : '#1a1d2e',
+              }}
+            >
+              {user?.name || 'Usuario'}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                color: mode === 'dark' ? '#8b90a8' : '#7c8098',
+                fontSize: '0.68rem',
+                fontWeight: 500,
+              }}
+            >
+              {user?.role === 'ADMIN' ? 'Administrador' : user?.role === 'RH' ? 'Recursos Humanos' : 'Produccion'}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              bgcolor: '#00b894',
+              flexShrink: 0,
+            }}
+          />
         </Box>
       </Box>
     </Box>
@@ -267,9 +327,8 @@ export default function Sidebar({ open, onClose, variant }: SidebarProps) {
           width: DRAWER_WIDTH,
           boxSizing: 'border-box',
           border: 'none',
-          boxShadow: mode === 'dark'
-            ? '4px 0 24px rgba(0, 0, 0, 0.3)'
-            : '4px 0 24px rgba(0, 0, 0, 0.05)',
+          borderRight: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+          boxShadow: 'none',
         },
       }}
     >

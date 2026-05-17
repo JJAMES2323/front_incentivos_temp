@@ -152,6 +152,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      pnpm:
+        specifier: ^11.0.9
+        version: 11.1.2
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -2034,6 +2037,11 @@ packages:
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
+
+  pnpm@11.1.2:
+    resolution: {integrity: sha512-QVocwll0cx51RVwUaDcb50xapft2IbUNQFbSIkUWCfEUEvI/1gLmFp8eBgRmZB95hZfhvpYaEGiINqZ7FlaUmQ==}
+    engines: {node: '>=22.13'}
+    hasBin: true
 
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
@@ -3967,6 +3975,8 @@ snapshots:
   path-type@4.0.0: {}
 
   picocolors@1.1.1: {}
+
+  pnpm@11.1.2: {}
 
   postcss-value-parser@4.2.0: {}
 

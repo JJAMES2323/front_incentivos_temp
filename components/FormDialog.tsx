@@ -38,6 +38,12 @@ export default function FormDialog({
       onClose={isLoading ? undefined : onClose} 
       maxWidth={maxWidth} 
       fullWidth
+      PaperProps={{
+        sx: {
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+        },
+      }}
     >
       <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {title}

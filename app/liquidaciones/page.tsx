@@ -11,12 +11,17 @@ import { getErrorMessage } from '@/lib/utils';
 import { liquidacionesApi } from '@/lib/api';
 import { Liquidacion } from '@/lib/types';
 import LiquidacionFormDialog from './LiquidacionFormDialog';
+import LiquidacionDetailDialog from './LiquidacionDetailDialog';
+import Button from '@mui/material/Button';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 export default function LiquidacionesPage() {
   const { showError } = useSnackbar();
   const [liquidaciones, setLiquidaciones] = useState<Liquidacion[]>([]);
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedLiquidacion, setSelectedLiquidacion] = useState<Liquidacion | null>(null);
 
   const fetchLiquidaciones = useCallback(async () => {
     try {
@@ -35,9 +40,14 @@ export default function LiquidacionesPage() {
     fetchLiquidaciones();
   }, [fetchLiquidaciones]);
 
+  const handleViewDetail = (liquidacion: Liquidacion) => {
+    setSelectedLiquidacion(liquidacion);
+    setDetailOpen(true);
+  };
+
   const columns: GridColDef<Liquidacion>[] = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'module', headerName: 'Módulo', width: 120 },
+    { field: 'module', headerName: 'Modulo', width: 120 },
     {
       field: 'startDate',
       headerName: 'Inicio',
@@ -55,10 +65,27 @@ export default function LiquidacionesPage() {
     { field: 'createdUser', headerName: 'Creada por', flex: 1, minWidth: 220 },
     {
       field: 'createdAt',
-      headerName: 'Fecha creación',
+      headerName: 'Fecha creacion',
       width: 170,
       renderCell: (params: GridRenderCellParams<Liquidacion>) =>
         params.row.createdAt ? dayjs(params.row.createdAt).format('DD/MM/YYYY HH:mm') : '-',
+    },
+    {
+      field: 'actions',
+      headerName: 'Acciones',
+      width: 140,
+      sortable: false,
+      renderCell: (params: GridRenderCellParams<Liquidacion>) => (
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<VisibilityIcon />}
+          onClick={() => handleViewDetail(params.row)}
+          sx={{ borderRadius: 2, textTransform: 'none' }}
+        >
+          Ver detalle
+        </Button>
+      ),
     },
   ];
 
@@ -66,9 +93,9 @@ export default function LiquidacionesPage() {
     <ProtectedLayout allowedRoles={['ADMIN', 'PRODUCCION']}>
       <PageHeader
         title="Liquidaciones"
-        subtitle="Generación y consulta de liquidaciones por módulo"
+        subtitle="Generacion y consulta de liquidaciones por modulo"
         onAddClick={() => setFormOpen(true)}
-        addButtonText="Nueva Liquidación"
+        addButtonText="Nueva Liquidacion"
       />
 
       <EnhancedDataTable rows={liquidaciones} columns={columns} loading={loading} />
@@ -80,6 +107,12 @@ export default function LiquidacionesPage() {
           setFormOpen(false);
           await fetchLiquidaciones();
         }}
+      />
+
+      <LiquidacionDetailDialog
+        open={detailOpen}
+        liquidacion={selectedLiquidacion}
+        onClose={() => setDetailOpen(false)}
       />
     </ProtectedLayout>
   );

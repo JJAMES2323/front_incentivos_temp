@@ -82,7 +82,7 @@ function ShiftEntryDialog({ open, date, module, employees, onClose, onSuccess }:
     }
   };
 
-  if (!open || moduleEmployees.length === 0) return null;
+  if (!open) return null;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -90,9 +90,7 @@ function ShiftEntryDialog({ open, date, module, employees, onClose, onSuccess }:
         sx={{
           fontWeight: 700,
           pb: 1,
-          borderBottom: mode === 'dark'
-            ? '1px solid rgba(71, 85, 105, 0.3)'
-            : '1px solid rgba(226, 232, 240, 0.6)',
+          borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -100,7 +98,7 @@ function ShiftEntryDialog({ open, date, module, employees, onClose, onSuccess }:
             variant="h6"
             sx={{
               fontWeight: 800,
-              color: module === 'M1' ? '#6366f1' : '#ec4899',
+              color: module === 'M1' ? '#6c5ce7' : '#00cec9',
             }}
           >
             {module}
@@ -111,6 +109,18 @@ function ShiftEntryDialog({ open, date, module, employees, onClose, onSuccess }:
         </Box>
       </DialogTitle>
       <DialogContent sx={{ pt: '24px !important' }}>
+        {moduleEmployees.length === 0 ? (
+          <Box sx={{ py: 4, textAlign: 'center' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, mb: 1, color: 'text.secondary' }}>
+              Sin empleados activos
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              No hay empleados activos asignados al modulo <strong>{module}</strong>.
+              Agrega empleados con este modulo desde la seccion de Empleados.
+            </Typography>
+          </Box>
+        ) : (
+        <>
         <Box sx={{ mb: 3 }}>
           <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
             Minutos base trabajados
@@ -137,14 +147,12 @@ function ShiftEntryDialog({ open, date, module, employees, onClose, onSuccess }:
                   alignItems: 'center',
                   gap: 1.5,
                   p: 1.5,
-                  borderRadius: 2,
-                  border: mode === 'dark'
-                    ? '1px solid rgba(71, 85, 105, 0.3)'
-                    : '1px solid rgba(226, 232, 240, 0.6)',
-                  bgcolor: mode === 'dark' ? 'rgba(15, 23, 42, 0.3)' : 'rgba(248, 250, 252, 0.5)',
+                  borderRadius: '10px',
+                  border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+                  bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.3)' : 'rgba(247, 248, 252, 0.5)',
                 }}
               >
-                <PersonIcon sx={{ fontSize: 18, color: mode === 'dark' ? '#818cf8' : '#6366f1', flexShrink: 0 }} />
+                <PersonIcon sx={{ fontSize: 18, color: mode === 'dark' ? '#a78bfa' : '#6c5ce7', flexShrink: 0 }} />
                 <Typography sx={{ fontWeight: 600, fontSize: '0.85rem', flex: 1 }} noWrap>
                   {employee?.name}
                 </Typography>
@@ -167,12 +175,16 @@ function ShiftEntryDialog({ open, date, module, employees, onClose, onSuccess }:
             );
           })}
         </Box>
+        </>
+        )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
-        <Button variant="contained" onClick={handleSave} disabled={isSaving}>
-          Guardar
-        </Button>
+        <Button onClick={onClose}>{moduleEmployees.length === 0 ? 'Cerrar' : 'Cancelar'}</Button>
+        {moduleEmployees.length > 0 && (
+          <Button variant="contained" onClick={handleSave} disabled={isSaving}>
+            Guardar
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
@@ -201,11 +213,9 @@ function CalendarDay({ day, isCurrentMonth, isToday, modules, logs, onAddModule,
       <Box
         sx={{
           minHeight: { xs: 80, sm: 100, md: 110 },
-          border: mode === 'dark'
-            ? '1px solid rgba(71, 85, 105, 0.15)'
-            : '1px solid rgba(226, 232, 240, 0.3)',
+          border: `1px solid ${mode === 'dark' ? 'rgba(38, 42, 64, 0.15)' : 'rgba(228, 230, 239, 0.3)'}`,
           p: 1,
-          bgcolor: mode === 'dark' ? 'rgba(15, 23, 42, 0.2)' : 'rgba(248, 250, 252, 0.3)',
+          bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.2)' : 'rgba(247, 248, 252, 0.3)',
         }}
       />
     );
@@ -215,18 +225,16 @@ function CalendarDay({ day, isCurrentMonth, isToday, modules, logs, onAddModule,
     <Box
       sx={{
         minHeight: { xs: 80, sm: 100, md: 110 },
-        border: mode === 'dark'
-          ? '1px solid rgba(71, 85, 105, 0.3)'
-          : '1px solid rgba(226, 232, 240, 0.6)',
+        border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
         p: 1,
         position: 'relative',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         bgcolor: isToday
-          ? mode === 'dark' ? 'rgba(99, 102, 241, 0.08)' : 'rgba(99, 102, 241, 0.03)'
+          ? mode === 'dark' ? 'rgba(108, 92, 231, 0.08)' : 'rgba(108, 92, 231, 0.03)'
           : 'transparent',
         '&:hover': {
-          bgcolor: mode === 'dark' ? 'rgba(99, 102, 241, 0.06)' : 'rgba(99, 102, 241, 0.02)',
+          bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.06)' : 'rgba(108, 92, 231, 0.02)',
           '& .day-add-btn': { opacity: 1 },
         },
       }}
@@ -246,7 +254,7 @@ function CalendarDay({ day, isCurrentMonth, isToday, modules, logs, onAddModule,
             borderRadius: '50%',
             color: isToday ? 'white' : 'text.primary',
             background: isToday
-              ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
+              ? 'linear-gradient(135deg, #6c5ce7, #a29bfe)'
               : 'transparent',
           }}
         >
@@ -270,14 +278,14 @@ function CalendarDay({ day, isCurrentMonth, isToday, modules, logs, onAddModule,
               gap: 0.5,
               px: 0.75,
               py: 0.3,
-              borderRadius: 1.5,
+              borderRadius: '6px',
               bgcolor: mode === 'dark'
-                ? 'rgba(99, 102, 241, 0.12)'
-                : 'rgba(99, 102, 241, 0.08)',
+                ? 'rgba(108, 92, 231, 0.12)'
+                : 'rgba(108, 92, 231, 0.08)',
             }}
           >
-            <CheckCircleIcon sx={{ fontSize: 12, color: '#6366f1', flexShrink: 0 }} />
-            <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.65rem', color: '#6366f1' }}>
+            <CheckCircleIcon sx={{ fontSize: 12, color: '#6c5ce7', flexShrink: 0 }} />
+            <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.65rem', color: '#6c5ce7' }}>
               M1
             </Typography>
             <Typography variant="caption" sx={{ fontSize: '0.6rem', color: 'text.secondary' }}>
@@ -285,33 +293,33 @@ function CalendarDay({ day, isCurrentMonth, isToday, modules, logs, onAddModule,
             </Typography>
           </Box>
         ) : (
-          <IconButton
-            className="day-add-btn"
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddModule(day.format('YYYY-MM-DD'), 'M1');
-            }}
-            sx={{
-              opacity: 0,
-              transition: 'all 0.2s ease',
-              width: '100%',
-              borderRadius: 1.5,
-              bgcolor: mode === 'dark'
-                ? 'rgba(99, 102, 241, 0.1)'
-                : 'rgba(99, 102, 241, 0.06)',
-              border: mode === 'dark'
-                ? '1px dashed rgba(99, 102, 241, 0.3)'
-                : '1px dashed rgba(99, 102, 241, 0.2)',
-              '&:hover': {
+          <Tooltip title="Agregar turno M1" placement="top">
+            <IconButton
+              className="day-add-btn"
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddModule(day.format('YYYY-MM-DD'), 'M1');
+              }}
+              sx={{
+                opacity: 0,
+                transition: 'all 0.2s ease',
+                width: '100%',
+                borderRadius: '6px',
                 bgcolor: mode === 'dark'
-                  ? 'rgba(99, 102, 241, 0.2)'
-                  : 'rgba(99, 102, 241, 0.12)',
-              },
-            }}
-          >
-            <AddIcon sx={{ fontSize: 14, color: '#6366f1' }} />
-          </IconButton>
+                  ? 'rgba(108, 92, 231, 0.1)'
+                  : 'rgba(108, 92, 231, 0.06)',
+                border: `1px dashed ${mode === 'dark' ? 'rgba(108, 92, 231, 0.3)' : 'rgba(108, 92, 231, 0.2)'}`,
+                '&:hover': {
+                  bgcolor: mode === 'dark'
+                    ? 'rgba(108, 92, 231, 0.2)'
+                    : 'rgba(108, 92, 231, 0.12)',
+                },
+              }}
+            >
+              <AddIcon sx={{ fontSize: 14, color: '#6c5ce7' }} />
+            </IconButton>
+          </Tooltip>
         )}
 
         {/* M2 */}
@@ -323,14 +331,14 @@ function CalendarDay({ day, isCurrentMonth, isToday, modules, logs, onAddModule,
               gap: 0.5,
               px: 0.75,
               py: 0.3,
-              borderRadius: 1.5,
+              borderRadius: '6px',
               bgcolor: mode === 'dark'
-                ? 'rgba(236, 72, 153, 0.12)'
-                : 'rgba(236, 72, 153, 0.08)',
+                ? 'rgba(0, 206, 201, 0.12)'
+                : 'rgba(0, 206, 201, 0.08)',
             }}
           >
-            <CheckCircleIcon sx={{ fontSize: 12, color: '#ec4899', flexShrink: 0 }} />
-            <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.65rem', color: '#ec4899' }}>
+            <CheckCircleIcon sx={{ fontSize: 12, color: '#00cec9', flexShrink: 0 }} />
+            <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.65rem', color: '#00cec9' }}>
               M2
             </Typography>
             <Typography variant="caption" sx={{ fontSize: '0.6rem', color: 'text.secondary' }}>
@@ -338,33 +346,33 @@ function CalendarDay({ day, isCurrentMonth, isToday, modules, logs, onAddModule,
             </Typography>
           </Box>
         ) : (
-          <IconButton
-            className="day-add-btn"
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAddModule(day.format('YYYY-MM-DD'), 'M2');
-            }}
-            sx={{
-              opacity: 0,
-              transition: 'all 0.2s ease',
-              width: '100%',
-              borderRadius: 1.5,
-              bgcolor: mode === 'dark'
-                ? 'rgba(236, 72, 153, 0.1)'
-                : 'rgba(236, 72, 153, 0.06)',
-              border: mode === 'dark'
-                ? '1px dashed rgba(236, 72, 153, 0.3)'
-                : '1px dashed rgba(236, 72, 153, 0.2)',
-              '&:hover': {
+          <Tooltip title="Agregar turno M2" placement="top">
+            <IconButton
+              className="day-add-btn"
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddModule(day.format('YYYY-MM-DD'), 'M2');
+              }}
+              sx={{
+                opacity: 0,
+                transition: 'all 0.2s ease',
+                width: '100%',
+                borderRadius: '6px',
                 bgcolor: mode === 'dark'
-                  ? 'rgba(236, 72, 153, 0.2)'
-                  : 'rgba(236, 72, 153, 0.12)',
-              },
-            }}
-          >
-            <AddIcon sx={{ fontSize: 14, color: '#ec4899' }} />
-          </IconButton>
+                  ? 'rgba(0, 206, 201, 0.1)'
+                  : 'rgba(0, 206, 201, 0.06)',
+                border: `1px dashed ${mode === 'dark' ? 'rgba(0, 206, 201, 0.3)' : 'rgba(0, 206, 201, 0.2)'}`,
+                '&:hover': {
+                  bgcolor: mode === 'dark'
+                    ? 'rgba(0, 206, 201, 0.2)'
+                    : 'rgba(0, 206, 201, 0.12)',
+                },
+              }}
+            >
+              <AddIcon sx={{ fontSize: 14, color: '#00cec9' }} />
+            </IconButton>
+          </Tooltip>
         )}
       </Box>
     </Box>
@@ -422,7 +430,7 @@ export default function WorkLogCalendar({ workLogs, employees, loading, onViewDa
     return result;
   }, [calendarDays]);
 
-  const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  const weekDays = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
 
   const stats = useMemo(() => {
     const daysInMonth = currentMonth.daysInMonth();
@@ -460,15 +468,14 @@ export default function WorkLogCalendar({ workLogs, employees, loading, onViewDa
       <Box
         sx={{
           width: '100%',
-          animation: 'slideUp 0.5s ease',
-          borderRadius: 4,
+          animation: 'slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+          borderRadius: '14px',
           overflow: 'hidden',
-          border: mode === 'dark'
-            ? '1px solid rgba(71, 85, 105, 0.4)'
-            : '1px solid rgba(226, 232, 240, 0.6)',
+          border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+          bgcolor: mode === 'dark' ? '#151828' : '#ffffff',
           boxShadow: mode === 'dark'
-            ? '0 4px 20px rgba(0, 0, 0, 0.2)'
-            : '0 4px 20px rgba(0, 0, 0, 0.04)',
+            ? '0 1px 3px rgba(0, 0, 0, 0.15)'
+            : '0 1px 3px rgba(0, 0, 0, 0.04)',
         }}
       >
         {/* Header */}
@@ -479,12 +486,8 @@ export default function WorkLogCalendar({ workLogs, employees, loading, onViewDa
             justifyContent: 'space-between',
             px: 3,
             py: 2,
-            borderBottom: mode === 'dark'
-              ? '1px solid rgba(71, 85, 105, 0.4)'
-              : '1px solid rgba(226, 232, 240, 0.6)',
-            background: mode === 'dark'
-              ? 'linear-gradient(to right, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))'
-              : 'linear-gradient(to right, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.95))',
+            borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+            bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.4)' : 'rgba(247, 248, 252, 0.6)',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -493,18 +496,18 @@ export default function WorkLogCalendar({ workLogs, employees, loading, onViewDa
               size="small"
               sx={{
                 bgcolor: mode === 'dark'
-                  ? 'rgba(99, 102, 241, 0.15)'
-                  : 'rgba(99, 102, 241, 0.1)',
+                  ? 'rgba(108, 92, 231, 0.12)'
+                  : 'rgba(108, 92, 231, 0.07)',
               }}
             >
-              <TodayIcon sx={{ fontSize: 20, color: '#6366f1' }} />
+              <TodayIcon sx={{ fontSize: 20, color: '#6c5ce7' }} />
             </IconButton>
-            <Typography variant="h5" sx={{ fontWeight: 800, textTransform: 'capitalize' }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, textTransform: 'capitalize', fontSize: '1.1rem', letterSpacing: '-0.02em' }}>
               {currentMonth.format('MMMM YYYY')}
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
             <IconButton onClick={() => setCurrentMonth((p) => p.subtract(1, 'month'))} size="small">
               <ChevronLeftIcon />
             </IconButton>
@@ -522,26 +525,24 @@ export default function WorkLogCalendar({ workLogs, employees, loading, onViewDa
             gap: 2,
             px: 3,
             py: 1,
-            borderBottom: mode === 'dark'
-              ? '1px solid rgba(71, 85, 105, 0.3)'
-              : '1px solid rgba(226, 232, 240, 0.6)',
-            bgcolor: mode === 'dark' ? 'rgba(15, 23, 42, 0.3)' : 'rgba(248, 250, 252, 0.5)',
+            borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+            bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.3)' : 'rgba(247, 248, 252, 0.5)',
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <CheckCircleIcon sx={{ fontSize: 16, color: '#6366f1' }} />
+            <CheckCircleIcon sx={{ fontSize: 16, color: '#6c5ce7' }} />
             <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.75rem' }}>
               M1: {stats.daysWithM1}/{stats.totalDays}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <CheckCircleIcon sx={{ fontSize: 16, color: '#ec4899' }} />
+            <CheckCircleIcon sx={{ fontSize: 16, color: '#00cec9' }} />
             <Typography variant="caption" sx={{ fontWeight: 600, fontSize: '0.75rem' }}>
               M2: {stats.daysWithM2}/{stats.totalDays}
             </Typography>
           </Box>
-          <Typography variant="caption" color="text.secondary" sx={{ ml: 'auto' }}>
-            + en cada módulo pendiente
+          <Typography variant="caption" color="text.secondary" sx={{ ml: 'auto', fontSize: '0.72rem' }}>
+            Pasa el cursor sobre un dia para agregar
           </Typography>
         </Box>
 
@@ -552,9 +553,7 @@ export default function WorkLogCalendar({ workLogs, employees, loading, onViewDa
             sx={{
               display: 'grid',
               gridTemplateColumns: 'repeat(7, 1fr)',
-              borderBottom: mode === 'dark'
-                ? '2px solid rgba(71, 85, 105, 0.5)'
-                : '2px solid rgba(226, 232, 240, 1)',
+              borderBottom: `2px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
             }}
           >
             {weekDays.map((d) => (
@@ -567,7 +566,7 @@ export default function WorkLogCalendar({ workLogs, employees, loading, onViewDa
                   fontSize: '0.7rem',
                   letterSpacing: '0.05em',
                   textTransform: 'uppercase',
-                  color: mode === 'dark' ? '#94a3b8' : '#64748b',
+                  color: mode === 'dark' ? '#8b90a8' : '#7c8098',
                 }}
               >
                 {d}

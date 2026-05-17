@@ -7,9 +7,13 @@ import { SnackbarProvider } from '@/contexts/SnackbarContext';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Sistema de Gestión de Producción',
-  description: 'Sistema de gestión de producción y liquidación de empleados',
+  title: {
+    default: 'ProduccionApp — Sistema de Gestion',
+    template: '%s | ProduccionApp',
+  },
+  description: 'Sistema integral de gestion de produccion, liquidacion de empleados y control de ordenes.',
   generator: 'v0.app',
+  keywords: ['produccion', 'gestion', 'liquidacion', 'empleados', 'ordenes'],
   icons: {
     icon: [
       {
@@ -30,7 +34,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#1976d2',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f7f8fc' },
+    { media: '(prefers-color-scheme: dark)', color: '#0d0f1a' },
+  ],
 };
 
 export default function RootLayout({
@@ -39,7 +46,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider>

@@ -209,15 +209,15 @@ export default function WorkLogsPage() {
               display: 'flex',
               p: 0.5,
               borderRadius: 3,
-              border: mode === 'dark' ? '1px solid rgba(71, 85, 105, 0.4)' : '1px solid rgba(226, 232, 240, 0.6)',
-              bgcolor: mode === 'dark' ? 'rgba(15, 23, 42, 0.5)' : 'rgba(248, 250, 252, 0.8)',
+              border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+              bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.5)' : 'rgba(247, 248, 252, 0.8)',
             }}
           >
             <IconButton
               size="small"
               onClick={() => setViewMode('calendar')}
               sx={{
-                bgcolor: viewMode === 'calendar' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                bgcolor: viewMode === 'calendar' ? 'linear-gradient(135deg, #6c5ce7, #a29bfe)' : 'transparent',
                 color: viewMode === 'calendar' ? 'white' : 'text.secondary',
                 borderRadius: 2,
               }}
@@ -228,7 +228,7 @@ export default function WorkLogsPage() {
               size="small"
               onClick={() => setViewMode('table')}
               sx={{
-                bgcolor: viewMode === 'table' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                bgcolor: viewMode === 'table' ? 'linear-gradient(135deg, #6c5ce7, #a29bfe)' : 'transparent',
                 color: viewMode === 'table' ? 'white' : 'text.secondary',
                 borderRadius: 2,
               }}
@@ -293,11 +293,11 @@ export default function WorkLogsPage() {
         fullWidth
         slotProps={{
           paper: {
-            sx: { borderRadius: 4, border: mode === 'dark' ? '1px solid rgba(71, 85, 105, 0.4)' : '1px solid rgba(226, 232, 240, 0.6)' },
+            sx: { borderRadius: '14px', border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}` },
           },
         }}
       >
-        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 700, pb: 1, borderBottom: mode === 'dark' ? '1px solid rgba(71, 85, 105, 0.3)' : '1px solid rgba(226, 232, 240, 0.6)' }}>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 700, pb: 1, borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}` }}>
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               {dayjs(selectedDate).format('DD/MM/YYYY')}

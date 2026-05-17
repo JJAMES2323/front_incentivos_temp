@@ -34,33 +34,18 @@ export default function PageHeader({
         justifyContent: 'space-between',
         gap: 2,
         mb: 3,
-        animation: 'fadeIn 0.4s ease',
-        position: 'relative',
+        animation: 'fadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
       }}
     >
-      <Box
-        sx={{
-          position: 'relative',
-          pl: 3,
-        }}
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            left: 0,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: 4,
-            height: '80%',
-            borderRadius: 2,
-            background: 'linear-gradient(180deg, #6366f1, #ec4899)',
-          }}
-        />
+      <Box>
         <Typography
           variant="h4"
           sx={{
             fontWeight: 800,
+            fontSize: { xs: '1.35rem', md: '1.55rem' },
+            letterSpacing: '-0.025em',
             lineHeight: 1.2,
+            color: mode === 'dark' ? '#e8eaf0' : '#1a1d2e',
           }}
         >
           {title}
@@ -68,8 +53,12 @@ export default function PageHeader({
         {subtitle && (
           <Typography
             variant="body2"
-            color="text.secondary"
-            sx={{ mt: 0.5, fontWeight: 500 }}
+            sx={{
+              mt: 0.5,
+              fontWeight: 400,
+              color: mode === 'dark' ? '#8b90a8' : '#7c8098',
+              fontSize: '0.85rem',
+            }}
           >
             {subtitle}
           </Typography>
@@ -80,16 +69,19 @@ export default function PageHeader({
         (showAddButton && onAddClick && (
           <Button
             variant="contained"
-            startIcon={<AddIcon />}
+            startIcon={<AddIcon sx={{ fontSize: '1.1rem !important' }} />}
             onClick={onAddClick}
             sx={{
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)',
+              background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
               backgroundSize: '200% 200%',
-              animation: 'gradient 3s ease infinite',
-              boxShadow: '0 6px 20px rgba(99, 102, 241, 0.3)',
+              animation: 'gradient 4s ease infinite',
+              boxShadow: '0 4px 14px rgba(108, 92, 231, 0.25)',
+              px: 2.5,
+              py: 1,
+              fontSize: '0.85rem',
               '&:hover': {
-                boxShadow: '0 8px 25px rgba(99, 102, 241, 0.4)',
-                transform: 'translateY(-2px)',
+                boxShadow: '0 6px 20px rgba(108, 92, 231, 0.35)',
+                transform: 'translateY(-1px)',
               },
             }}
           >

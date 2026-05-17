@@ -31,9 +31,25 @@ export default function ProtectedLayout({ children, allowedRoles }: ProtectedLay
         sx={{
           display: 'flex',
           minHeight: '100vh',
-          bgcolor: mode === 'dark' ? '#0f172a' : '#f8fafc',
+          bgcolor: mode === 'dark' ? '#0d0f1a' : '#f7f8fc',
+          position: 'relative',
         }}
       >
+        {/* Ambient mesh gradient */}
+        <Box
+          sx={{
+            position: 'fixed',
+            inset: 0,
+            pointerEvents: 'none',
+            zIndex: 0,
+            opacity: mode === 'dark' ? 0.6 : 0.4,
+            background:
+              mode === 'dark'
+                ? 'radial-gradient(ellipse at 10% 20%, rgba(108, 92, 231, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 90% 80%, rgba(0, 206, 201, 0.05) 0%, transparent 50%)'
+                : 'radial-gradient(ellipse at 10% 20%, rgba(108, 92, 231, 0.04) 0%, transparent 50%), radial-gradient(ellipse at 90% 80%, rgba(0, 206, 201, 0.03) 0%, transparent 50%)',
+          }}
+        />
+
         {!isMobile && (
           <Sidebar open={true} onClose={() => {}} variant="permanent" />
         )}
@@ -54,17 +70,20 @@ export default function ProtectedLayout({ children, allowedRoles }: ProtectedLay
             minHeight: '100vh',
             display: 'flex',
             flexDirection: 'column',
+            position: 'relative',
+            zIndex: 1,
           }}
         >
           <Header onMenuClick={handleDrawerToggle} isMobile={isMobile} />
 
-          <Box sx={{ height: 72 }} />
+          <Box sx={{ height: 64 }} />
 
           <Box
             sx={{
-              p: 3,
+              px: { xs: 2, md: 3 },
+              py: 2.5,
               flexGrow: 1,
-              animation: 'fadeIn 0.4s ease',
+              animation: 'fadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
             }}
           >
             {children}

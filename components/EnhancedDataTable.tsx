@@ -12,6 +12,7 @@ import { DataGrid, GridColDef, GridRowsProp, GridPaginationModel } from '@mui/x-
 import { esES } from '@mui/x-data-grid/locales';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import FilterListOffIcon from '@mui/icons-material/FilterListOff';
 import { useTheme } from '@/contexts/ThemeContext';
 
 interface EnhancedDataTableProps {
@@ -108,7 +109,7 @@ export default function EnhancedDataTable({
 
   const activeFilterCount = Object.values(filters).filter(v => v.trim()).length + (globalSearch.trim() ? 1 : 0);
 
-  const cellHeight = compact ? 32 : 48;
+  const cellHeight = compact ? 36 : 48;
 
   const renderHeader = useCallback((col: GridColDef) => {
     if (col.field === 'actions' || col.field === 'id') {
@@ -122,11 +123,11 @@ export default function EnhancedDataTable({
         <Typography
           sx={{
             fontWeight: 700,
-            fontSize: compact ? '0.65rem' : '0.7rem',
-            letterSpacing: '0.05em',
+            fontSize: compact ? '0.62rem' : '0.68rem',
+            letterSpacing: '0.06em',
             textTransform: 'uppercase',
-            color: mode === 'dark' ? '#94a3b8' : '#64748b',
-            mb: 0.5,
+            color: mode === 'dark' ? '#8b90a8' : '#7c8098',
+            mb: 0.75,
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -144,19 +145,15 @@ export default function EnhancedDataTable({
           onClick={(e) => e.stopPropagation()}
           sx={{
             '& .MuiOutlinedInput-root': {
-              height: compact ? 26 : 30,
-              borderRadius: 2,
-              bgcolor: mode === 'dark'
-                ? 'rgba(15, 23, 42, 0.5)'
-                : 'rgba(255, 255, 255, 0.8)',
-              fontSize: compact ? '0.72rem' : '0.78rem',
+              height: compact ? 26 : 28,
+              borderRadius: '7px',
+              bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.5)' : 'rgba(255, 255, 255, 0.8)',
+              fontSize: compact ? '0.72rem' : '0.76rem',
               '& fieldset': {
-                borderColor: mode === 'dark'
-                  ? 'rgba(71, 85, 105, 0.4)'
-                  : 'rgba(226, 232, 240, 0.6)',
+                borderColor: mode === 'dark' ? 'rgba(38, 42, 64, 0.6)' : 'rgba(228, 230, 239, 0.8)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#6366f1',
+                borderColor: '#6c5ce7',
               },
             },
             '& .MuiOutlinedInput-input': {
@@ -175,7 +172,7 @@ export default function EnhancedDataTable({
                     }}
                     sx={{ padding: 0, mr: 0.5 }}
                   >
-                    <ClearIcon sx={{ fontSize: compact ? 14 : 16, color: '#6366f1' }} />
+                    <ClearIcon sx={{ fontSize: compact ? 14 : 15, color: '#6c5ce7' }} />
                   </IconButton>
                 </InputAdornment>
               ),
@@ -202,13 +199,12 @@ export default function EnhancedDataTable({
       sx={{
         width: '100%',
         overflow: 'hidden',
-        animation: 'slideUp 0.5s ease',
-        border: mode === 'dark'
-          ? '1px solid rgba(71, 85, 105, 0.4)'
-          : '1px solid rgba(226, 232, 240, 0.6)',
+        animation: 'slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+        border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+        bgcolor: mode === 'dark' ? '#151828' : '#ffffff',
         boxShadow: mode === 'dark'
-          ? '0 4px 20px rgba(0, 0, 0, 0.2)'
-          : '0 4px 20px rgba(0, 0, 0, 0.04)',
+          ? '0 1px 3px rgba(0, 0, 0, 0.15)'
+          : '0 1px 3px rgba(0, 0, 0, 0.04)',
       }}
     >
       {showToolbar && (
@@ -217,60 +213,62 @@ export default function EnhancedDataTable({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            px: 3,
+            px: 2.5,
             py: compact ? 1 : 1.5,
-            borderBottom: mode === 'dark'
-              ? '1px solid rgba(71, 85, 105, 0.4)'
-              : '1px solid rgba(226, 232, 240, 0.6)',
-            background: mode === 'dark'
-              ? 'linear-gradient(to right, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))'
-              : 'linear-gradient(to right, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.95))',
+            borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+            bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.4)' : 'rgba(247, 248, 252, 0.6)',
             flexWrap: 'wrap',
             gap: 1,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             {title && (
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  letterSpacing: '-0.02em',
+                }}
+              >
                 {title}
               </Typography>
             )}
             <Box
               sx={{
-                px: 1.5,
-                py: 0.5,
-                borderRadius: 2,
-                bgcolor: mode === 'dark'
-                  ? 'rgba(99, 102, 241, 0.15)'
-                  : 'rgba(99, 102, 241, 0.1)',
-                border: mode === 'dark'
-                  ? '1px solid rgba(99, 102, 241, 0.2)'
-                  : '1px solid rgba(99, 102, 241, 0.15)',
+                px: 1.25,
+                py: 0.375,
+                borderRadius: '6px',
+                bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.12)' : 'rgba(108, 92, 231, 0.07)',
+                border: `1px solid ${mode === 'dark' ? 'rgba(108, 92, 231, 0.2)' : 'rgba(108, 92, 231, 0.12)'}`,
               }}
             >
-              <Typography variant="body2" sx={{ fontWeight: 600, color: '#6366f1', fontSize: '0.85rem' }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 600,
+                  color: mode === 'dark' ? '#a78bfa' : '#6c5ce7',
+                  fontSize: '0.72rem',
+                }}
+              >
                 {filteredRows.length} {filteredRows.length === 1 ? 'registro' : 'registros'}
               </Typography>
             </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                px: 2,
-                py: compact ? 0.5 : 0.75,
-                borderRadius: 3,
-                bgcolor: mode === 'dark'
-                  ? 'rgba(15, 23, 42, 0.6)'
-                  : 'rgba(248, 250, 252, 0.8)',
-                border: mode === 'dark'
-                  ? '1px solid rgba(71, 85, 105, 0.4)'
-                  : '1px solid rgba(226, 232, 240, 0.6)',
+                px: 1.5,
+                py: compact ? 0.5 : 0.625,
+                borderRadius: '8px',
+                bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.5)' : 'rgba(240, 241, 245, 0.6)',
+                border: `1px solid ${mode === 'dark' ? 'rgba(38, 42, 64, 0.5)' : 'rgba(228, 230, 239, 0.6)'}`,
               }}
             >
-              <SearchIcon sx={{ color: 'text.secondary', mr: 1, fontSize: 18 }} />
+              <SearchIcon sx={{ color: mode === 'dark' ? '#8b90a8' : '#7c8098', mr: 1, fontSize: 16 }} />
               <TextField
                 size="small"
                 placeholder="Buscar en todo..."
@@ -278,12 +276,12 @@ export default function EnhancedDataTable({
                 onChange={(e) => setGlobalSearch(e.target.value)}
                 sx={{
                   '& .MuiOutlinedInput-root': {
-                    height: compact ? 24 : 28,
+                    height: compact ? 22 : 26,
                     '& fieldset': { border: 'none' },
                   },
                   '& .MuiOutlinedInput-input': {
-                    padding: compact ? '2px 0' : '4px 0',
-                    fontSize: '0.85rem',
+                    padding: compact ? '2px 0' : '3px 0',
+                    fontSize: '0.82rem',
                   },
                 }}
               />
@@ -295,13 +293,16 @@ export default function EnhancedDataTable({
                   size="small"
                   onClick={clearAllFilters}
                   sx={{
-                    color: '#6366f1',
-                    bgcolor: mode === 'dark'
-                      ? 'rgba(99, 102, 241, 0.15)'
-                      : 'rgba(99, 102, 241, 0.1)',
+                    width: 32,
+                    height: 32,
+                    color: mode === 'dark' ? '#a78bfa' : '#6c5ce7',
+                    bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.1)' : 'rgba(108, 92, 231, 0.06)',
+                    '&:hover': {
+                      bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.18)' : 'rgba(108, 92, 231, 0.1)',
+                    },
                   }}
                 >
-                  <ClearIcon fontSize="small" />
+                  <FilterListOffIcon sx={{ fontSize: '1rem' }} />
                 </IconButton>
               </Tooltip>
             )}
@@ -324,43 +325,33 @@ export default function EnhancedDataTable({
           localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           sx={{
             border: 0,
+            fontFamily: '"Plus Jakarta Sans", "Source Sans 3", sans-serif',
             '& .MuiDataGrid-cell': {
-              borderBottom: mode === 'dark'
-                ? '1px solid rgba(71, 85, 105, 0.3)'
-                : '1px solid rgba(241, 245, 249, 1)',
-              py: compact ? 0.5 : 1.5,
-              transition: 'all 0.2s ease',
-              fontSize: compact ? '0.78rem' : '0.9rem',
+              borderBottom: `1px solid ${mode === 'dark' ? 'rgba(38, 42, 64, 0.5)' : 'rgba(240, 241, 245, 1)'}`,
+              py: compact ? 0.5 : 1.25,
+              transition: 'background-color 0.2s ease',
+              fontSize: compact ? '0.78rem' : '0.85rem',
               minHeight: cellHeight,
+              fontWeight: 400,
               '&:hover': {
-                bgcolor: mode === 'dark'
-                  ? 'rgba(99, 102, 241, 0.08)'
-                  : 'rgba(99, 102, 241, 0.04)',
+                bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.05)' : 'rgba(108, 92, 231, 0.02)',
               },
             },
             '& .MuiDataGrid-row': {
               '&:hover': {
-                backgroundColor: mode === 'dark'
-                  ? 'rgba(99, 102, 241, 0.08)'
-                  : 'rgba(99, 102, 241, 0.04)',
+                backgroundColor: mode === 'dark' ? 'rgba(108, 92, 231, 0.05)' : 'rgba(108, 92, 231, 0.02)',
               },
             },
             '& .MuiDataGrid-columnHeaders': {
               background: mode === 'dark'
-                ? 'linear-gradient(to bottom, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95))'
-                : 'linear-gradient(to bottom, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.95))',
-              borderBottom: mode === 'dark'
-                ? '2px solid rgba(71, 85, 105, 0.5)'
-                : '2px solid rgba(226, 232, 240, 1)',
+                ? 'linear-gradient(to bottom, rgba(21, 24, 40, 0.95), rgba(13, 15, 26, 0.95))'
+                : 'linear-gradient(to bottom, rgba(247, 248, 252, 0.95), rgba(240, 241, 245, 0.95))',
+              borderBottom: `1.5px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
             },
             '& .MuiDataGrid-footerContainer': {
-              borderTop: mode === 'dark'
-                ? '1px solid rgba(71, 85, 105, 0.3)'
-                : '1px solid rgba(241, 245, 249, 1)',
-              bgcolor: mode === 'dark'
-                ? 'rgba(15, 23, 42, 0.5)'
-                : 'rgba(248, 250, 252, 0.5)',
-              py: 1,
+              borderTop: `1px solid ${mode === 'dark' ? 'rgba(38, 42, 64, 0.5)' : 'rgba(240, 241, 245, 1)'}`,
+              bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.3)' : 'rgba(247, 248, 252, 0.3)',
+              py: 0.75,
             },
             '& .MuiDataGrid-cell:focus': {
               outline: 'none',
@@ -369,13 +360,13 @@ export default function EnhancedDataTable({
               outline: 'none',
             },
             '& .MuiDataGrid-checkboxInput': {
-              color: '#6366f1',
+              color: mode === 'dark' ? '#8b90a8' : '#7c8098',
             },
             '& .MuiDataGrid-sortIcon': {
-              color: '#6366f1',
+              color: mode === 'dark' ? '#8b90a8' : '#7c8098',
             },
             '& .MuiDataGrid-menuIcon': {
-              color: '#6366f1',
+              color: mode === 'dark' ? '#8b90a8' : '#7c8098',
             },
           }}
           slotProps={{

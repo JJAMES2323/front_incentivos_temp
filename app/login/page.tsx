@@ -25,7 +25,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { login, isAuthenticated } = useAuth();
   const { mode, toggleTheme } = useTheme();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -56,7 +56,7 @@ export default function LoginPage() {
     }
 
     if (!emailPattern.test(email)) {
-      setEmailError('El correo debe tener un formato válido');
+      setEmailError('El correo debe tener un formato valido');
       return;
     }
 
@@ -85,61 +85,69 @@ export default function LoginPage() {
         p: 2,
       }}
     >
+      {/* Background gradient */}
       <Box
         sx={{
           position: 'absolute',
           inset: 0,
           background: mode === 'dark'
-            ? 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 25%, #312e81 50%, #1e1b4b 75%, #0f172a 100%)'
-            : 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 25%, #c7d2fe 50%, #e0e7ff 75%, #f8fafc 100%)',
+            ? 'linear-gradient(135deg, #0d0f1a 0%, #151828 30%, #1a1d3a 50%, #151828 70%, #0d0f1a 100%)'
+            : 'linear-gradient(135deg, #f7f8fc 0%, #e8e6f8 30%, #d8d4f0 50%, #e8e6f8 70%, #f7f8fc 100%)',
           backgroundSize: '400% 400%',
-          animation: 'gradient 15s ease infinite',
+          animation: 'gradient 20s ease infinite',
+        }}
+      />
+
+      {/* Floating orbs */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '15%',
+          left: '12%',
+          width: { xs: 200, md: 350 },
+          height: { xs: 200, md: 350 },
+          borderRadius: '50%',
+          background: mode === 'dark'
+            ? 'radial-gradient(circle, rgba(108, 92, 231, 0.2) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(108, 92, 231, 0.15) 0%, transparent 70%)',
+          animation: 'float 8s ease-in-out infinite',
+          filter: 'blur(50px)',
         }}
       />
 
       <Box
         sx={{
           position: 'absolute',
-          top: '10%',
-          left: '10%',
-          width: { xs: 150, md: 300 },
-          height: { xs: 150, md: 300 },
+          bottom: '20%',
+          right: '10%',
+          width: { xs: 160, md: 300 },
+          height: { xs: 160, md: 300 },
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%)',
-          animation: 'float 6s ease-in-out infinite',
+          background: mode === 'dark'
+            ? 'radial-gradient(circle, rgba(0, 206, 201, 0.15) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(0, 206, 201, 0.12) 0%, transparent 70%)',
+          animation: 'float 10s ease-in-out infinite reverse',
+          filter: 'blur(50px)',
+        }}
+      />
+
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '60%',
+          left: '60%',
+          width: { xs: 120, md: 200 },
+          height: { xs: 120, md: 200 },
+          borderRadius: '50%',
+          background: mode === 'dark'
+            ? 'radial-gradient(circle, rgba(253, 203, 110, 0.1) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(253, 203, 110, 0.08) 0%, transparent 70%)',
+          animation: 'float 12s ease-in-out infinite',
           filter: 'blur(40px)',
         }}
       />
 
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: '15%',
-          right: '15%',
-          width: { xs: 120, md: 250 },
-          height: { xs: 120, md: 250 },
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, transparent 70%)',
-          animation: 'float 8s ease-in-out infinite reverse',
-          filter: 'blur(40px)',
-        }}
-      />
-
-      <Box
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: { xs: 200, md: 400 },
-          height: { xs: 200, md: 400 },
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
-          animation: 'float 10s ease-in-out infinite',
-          filter: 'blur(60px)',
-        }}
-      />
-
+      {/* Theme toggle */}
       <IconButton
         onClick={toggleTheme}
         sx={{
@@ -147,42 +155,45 @@ export default function LoginPage() {
           top: 24,
           right: 24,
           zIndex: 10,
-          bgcolor: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          color: mode === 'light' ? '#1e293b' : '#f8fafc',
+          width: 40,
+          height: 40,
+          bgcolor: mode === 'dark' ? 'rgba(30, 34, 53, 0.6)' : 'rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur(12px)',
+          border: `1px solid ${mode === 'dark' ? 'rgba(38, 42, 64, 0.6)' : 'rgba(228, 230, 239, 0.8)'}`,
+          color: mode === 'light' ? '#1a1d2e' : '#e8eaf0',
           '&:hover': {
-            bgcolor: 'rgba(255, 255, 255, 0.2)',
-            transform: 'rotate(180deg) scale(1.1)',
+            bgcolor: mode === 'dark' ? 'rgba(30, 34, 53, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            transform: 'rotate(180deg)',
           },
-          transition: 'all 0.3s ease',
+          transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
-        {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+        {mode === 'light' ? <DarkModeIcon sx={{ fontSize: '1.1rem' }} /> : <LightModeIcon sx={{ fontSize: '1.1rem' }} />}
       </IconButton>
 
+      {/* Login Card */}
       <Card
         sx={{
-          maxWidth: 440,
+          maxWidth: 420,
           width: '100%',
           position: 'relative',
           zIndex: 1,
           opacity: mounted ? 1 : 0,
-          transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-          backdropFilter: 'blur(20px)',
+          transform: mounted ? 'translateY(0)' : 'translateY(16px)',
+          transition: 'all 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
+          backdropFilter: 'blur(24px) saturate(200%)',
           background: mode === 'dark'
-            ? 'linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%)'
+            ? 'linear-gradient(135deg, rgba(21, 24, 40, 0.85) 0%, rgba(21, 24, 40, 0.6) 100%)'
             : 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)',
-          border: mode === 'dark'
-            ? '1px solid rgba(255, 255, 255, 0.1)'
-            : '1px solid rgba(255, 255, 255, 0.5)',
+          border: `1px solid ${mode === 'dark' ? 'rgba(38, 42, 64, 0.6)' : 'rgba(228, 230, 239, 0.8)'}`,
           boxShadow: mode === 'dark'
-            ? '0 25px 50px rgba(0, 0, 0, 0.4), 0 0 100px rgba(99, 102, 241, 0.1)'
-            : '0 25px 50px rgba(0, 0, 0, 0.1), 0 0 100px rgba(99, 102, 241, 0.05)',
+            ? '0 20px 60px rgba(0, 0, 0, 0.4), 0 0 80px rgba(108, 92, 231, 0.06)'
+            : '0 20px 60px rgba(0, 0, 0, 0.08), 0 0 80px rgba(108, 92, 231, 0.04)',
+          borderRadius: '18px',
         }}
       >
-        <CardContent sx={{ p: { xs: 3, sm: 5 } }}>
+        <CardContent sx={{ p: { xs: 3.5, sm: 4.5 } }}>
+          {/* Logo */}
           <Box
             sx={{
               display: 'flex',
@@ -193,47 +204,49 @@ export default function LoginPage() {
           >
             <Box
               sx={{
-                width: 80,
-                height: 80,
-                borderRadius: '24px',
-                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)',
+                width: 64,
+                height: 64,
+                borderRadius: '18px',
+                background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                mb: 3,
-                boxShadow: '0 10px 30px rgba(99, 102, 241, 0.4)',
-                animation: 'float 3s ease-in-out infinite',
-                transform: 'rotate(-5deg)',
+                mb: 2.5,
+                boxShadow: '0 8px 24px rgba(108, 92, 231, 0.35)',
+                animation: 'float 4s ease-in-out infinite',
                 transition: 'transform 0.3s ease',
                 '&:hover': {
-                  transform: 'rotate(0deg) scale(1.1)',
+                  transform: 'rotate(-5deg) scale(1.05)',
                 },
               }}
             >
-              <FactoryIcon sx={{ fontSize: 40, color: 'white' }} />
+              <FactoryIcon sx={{ fontSize: 32, color: 'white' }} />
             </Box>
             <Typography
-              variant="h4"
+              variant="h5"
               sx={{
                 fontWeight: 800,
                 textAlign: 'center',
-                background: 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)',
+                background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #00cec9 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                mb: 1,
+                mb: 0.75,
+                letterSpacing: '-0.03em',
               }}
             >
-              Producción
+              ProduccionApp
             </Typography>
             <Typography
               variant="body2"
               sx={{
-                color: 'text.secondary',
+                color: mode === 'dark' ? '#8b90a8' : '#7c8098',
                 textAlign: 'center',
+                fontSize: '0.85rem',
+                fontWeight: 400,
               }}
             >
-              Sistema de Gestión Integral
+              Sistema de Gestion Integral
             </Typography>
           </Box>
 
@@ -242,8 +255,12 @@ export default function LoginPage() {
               severity="error"
               sx={{
                 mb: 3,
-                borderRadius: 3,
-                animation: 'slideInLeft 0.3s ease',
+                borderRadius: '10px',
+                animation: 'slideInLeft 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                fontSize: '0.85rem',
+                '& .MuiAlert-message': {
+                  width: '100%',
+                },
               }}
             >
               {error}
@@ -253,7 +270,7 @@ export default function LoginPage() {
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
-              label="Correo Electrónico"
+              label="Correo Electronico"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -268,13 +285,13 @@ export default function LoginPage() {
               sx={{
                 mb: 2,
                 '& .MuiOutlinedInput-root': {
-                  bgcolor: mode === 'dark' ? 'rgba(15, 23, 42, 0.5)' : 'rgba(248, 250, 252, 0.5)',
+                  bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.4)' : 'rgba(247, 248, 252, 0.6)',
                 },
               }}
             />
             <TextField
               fullWidth
-              label="Contraseña"
+              label="Contrasena"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -289,6 +306,7 @@ export default function LoginPage() {
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                         disabled={isLoading}
+                        sx={{ color: mode === 'dark' ? '#8b90a8' : '#7c8098' }}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
@@ -299,7 +317,7 @@ export default function LoginPage() {
               sx={{
                 mb: 3,
                 '& .MuiOutlinedInput-root': {
-                  bgcolor: mode === 'dark' ? 'rgba(15, 23, 42, 0.5)' : 'rgba(248, 250, 252, 0.5)',
+                  bgcolor: mode === 'dark' ? 'rgba(13, 15, 26, 0.4)' : 'rgba(247, 248, 252, 0.6)',
                 },
               }}
             />
@@ -310,22 +328,26 @@ export default function LoginPage() {
               size="large"
               sx={{
                 py: 1.5,
-                fontSize: '1rem',
-                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
                 backgroundSize: '200% 200%',
-                animation: 'gradient 3s ease infinite',
-                boxShadow: '0 8px 25px rgba(99, 102, 241, 0.4)',
+                animation: 'gradient 4s ease infinite',
+                boxShadow: '0 6px 20px rgba(108, 92, 231, 0.3)',
+                borderRadius: '10px',
+                letterSpacing: '-0.01em',
                 '&:hover': {
-                  boxShadow: '0 12px 35px rgba(99, 102, 241, 0.5)',
-                  transform: 'translateY(-2px)',
+                  boxShadow: '0 8px 28px rgba(108, 92, 231, 0.4)',
+                  transform: 'translateY(-1px)',
                 },
+                transition: 'all 0.35s cubic-bezier(0.22, 1, 0.36, 1)',
               }}
               disabled={isLoading}
             >
               {isLoading ? (
-                <CircularProgress size={24} color="inherit" />
+                <CircularProgress size={22} color="inherit" />
               ) : (
-                'Iniciar Sesión'
+                'Iniciar Sesion'
               )}
             </Button>
           </Box>

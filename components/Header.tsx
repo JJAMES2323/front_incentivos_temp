@@ -16,6 +16,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -30,7 +31,7 @@ interface HeaderProps {
 const roleLabels: Record<string, string> = {
   ADMIN: 'Administrador',
   RH: 'Recursos Humanos',
-  PRODUCCION: 'Producción',
+  PRODUCCION: 'Produccion',
 };
 
 export default function Header({ onMenuClick, isMobile }: HeaderProps) {
@@ -55,17 +56,8 @@ export default function Header({ onMenuClick, isMobile }: HeaderProps) {
   };
 
   const getInitials = (name?: string) => {
-    if (!name?.trim()) {
-      return 'U';
-    }
-
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .filter(Boolean)
-      .join('')
-      .toUpperCase()
-      .slice(0, 2) || 'U';
+    if (!name?.trim()) return 'U';
+    return name.split(' ').map((n) => n[0]).filter(Boolean).join('').toUpperCase().slice(0, 2) || 'U';
   };
 
   return (
@@ -77,78 +69,54 @@ export default function Header({ onMenuClick, isMobile }: HeaderProps) {
         bgcolor: 'transparent',
         color: 'text.primary',
         boxShadow: 'none',
-        borderBottom: mode === 'dark'
-          ? '1px solid rgba(71, 85, 105, 0.4)'
-          : '1px solid rgba(226, 232, 240, 0.6)',
-        backdropFilter: 'blur(20px)',
+        borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+        backdropFilter: 'blur(24px) saturate(200%)',
         backgroundColor: mode === 'dark'
-          ? 'rgba(15, 23, 42, 0.8)'
-          : 'rgba(255, 255, 255, 0.8)',
+          ? 'rgba(13, 15, 26, 0.78)'
+          : 'rgba(247, 248, 252, 0.78)',
       }}
     >
-      <Toolbar>
+      <Toolbar sx={{ minHeight: '64px !important', px: { xs: 2, md: 3 } }}>
         {isMobile && (
           <IconButton
             color="inherit"
             edge="start"
             onClick={onMenuClick}
             sx={{
-              mr: 2,
+              mr: 1.5,
+              color: mode === 'dark' ? '#8b90a8' : '#7c8098',
               '&:hover': {
-                bgcolor: mode === 'dark'
-                  ? 'rgba(99, 102, 241, 0.15)'
-                  : 'rgba(99, 102, 241, 0.1)',
+                bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.1)' : 'rgba(108, 92, 231, 0.06)',
+                color: mode === 'dark' ? '#a78bfa' : '#6c5ce7',
               },
             }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{ fontSize: '1.3rem' }} />
           </IconButton>
         )}
 
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 0.5,
-            flexGrow: 1,
-          }}
-        >
-          <Box
-            sx={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #6366f1, #ec4899)',
-              animation: 'pulse 2s ease-in-out infinite',
-            }}
-          />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              fontWeight: 700,
-              fontSize: '1.1rem',
-            }}
-          >
-          </Typography>
-        </Box>
+        <Box sx={{ flexGrow: 1 }} />
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <Tooltip title={mode === 'light' ? 'Modo oscuro' : 'Modo claro'}>
             <IconButton
               onClick={toggleTheme}
               sx={{
-                color: 'text.primary',
+                width: 36,
+                height: 36,
+                color: mode === 'dark' ? '#8b90a8' : '#7c8098',
                 '&:hover': {
-                  bgcolor: mode === 'dark'
-                    ? 'rgba(99, 102, 241, 0.15)'
-                    : 'rgba(99, 102, 241, 0.1)',
-                  transform: 'rotate(180deg)',
+                  bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.1)' : 'rgba(108, 92, 231, 0.06)',
+                  color: mode === 'dark' ? '#a78bfa' : '#6c5ce7',
                 },
                 transition: 'all 0.3s ease',
               }}
             >
-              {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+              {mode === 'light' ? (
+                <DarkModeIcon sx={{ fontSize: '1.15rem' }} />
+              ) : (
+                <LightModeIcon sx={{ fontSize: '1.15rem' }} />
+              )}
             </IconButton>
           </Tooltip>
 
@@ -156,46 +124,21 @@ export default function Header({ onMenuClick, isMobile }: HeaderProps) {
             <IconButton
               onClick={handleMenu}
               size="small"
-              sx={{
-                '&:hover': {
-                  '& .avatar-wrapper': {
-                    transform: 'scale(1.1)',
-                  },
-                },
-              }}
+              sx={{ ml: 0.5 }}
             >
-              <Box
-                className="avatar-wrapper"
+              <Avatar
                 sx={{
-                  transition: 'transform 0.3s ease',
-                  position: 'relative',
+                  width: 34,
+                  height: 34,
+                  background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  border: `2px solid ${mode === 'dark' ? '#151828' : '#ffffff'}`,
+                  boxShadow: '0 2px 8px rgba(108, 92, 231, 0.2)',
                 }}
               >
-                <Avatar
-                  sx={{
-                    width: 38,
-                    height: 38,
-                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%)',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
-                  }}
-                >
-                  {user ? getInitials(displayName) : <PersonIcon />}
-                </Avatar>
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    bottom: -1,
-                    right: -1,
-                    width: 12,
-                    height: 12,
-                    borderRadius: '50%',
-                    bgcolor: user ? '#10b981' : '#94a3b8',
-                    border: `2px solid ${mode === 'dark' ? '#1e293b' : '#ffffff'}`,
-                  }}
-                />
-              </Box>
+                {user ? getInitials(displayName) : <PersonIcon sx={{ fontSize: '0.9rem' }} />}
+              </Avatar>
             </IconButton>
           </Tooltip>
         </Box>
@@ -210,28 +153,24 @@ export default function Header({ onMenuClick, isMobile }: HeaderProps) {
             paper: {
               elevation: 0,
               sx: {
-                minWidth: 220,
+                minWidth: 240,
                 mt: 1.5,
-                borderRadius: 3,
-                border: mode === 'dark'
-                  ? '1px solid rgba(71, 85, 105, 0.4)'
-                  : '1px solid rgba(226, 232, 240, 0.6)',
+                borderRadius: '14px',
+                border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
                 boxShadow: mode === 'dark'
-                  ? '0 20px 50px rgba(0, 0, 0, 0.4)'
-                  : '0 20px 50px rgba(0, 0, 0, 0.1)',
+                  ? '0 16px 48px rgba(0, 0, 0, 0.4)'
+                  : '0 16px 48px rgba(0, 0, 0, 0.08)',
                 overflow: 'visible',
                 '&::before': {
                   content: '""',
                   position: 'absolute',
                   top: 0,
-                  right: 14,
+                  right: 16,
                   width: 10,
                   height: 10,
-                  bgcolor: mode === 'dark' ? '#1e293b' : '#ffffff',
+                  bgcolor: mode === 'dark' ? '#151828' : '#ffffff',
                   transform: 'translateY(-50%) rotate(45deg)',
-                  border: mode === 'dark'
-                    ? '1px solid rgba(71, 85, 105, 0.4)'
-                    : '1px solid rgba(226, 232, 240, 0.6)',
+                  border: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
                   borderRight: 'none',
                   borderBottom: 'none',
                 },
@@ -240,53 +179,70 @@ export default function Header({ onMenuClick, isMobile }: HeaderProps) {
           }}
         >
           <Box sx={{ px: 2.5, py: 2 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-              {displayName}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
-              {user?.email || 'Sin correo'}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+              <Avatar
+                sx={{
+                  width: 40,
+                  height: 40,
+                  background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                }}
+              >
+                {getInitials(displayName)}
+              </Avatar>
+              <Box>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+                  {displayName}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.72rem' }}>
+                  {user?.email || 'Sin correo'}
+                </Typography>
+              </Box>
+            </Box>
             <Box
               sx={{
-                display: 'inline-block',
-                mt: 1,
-                px: 1.5,
+                display: 'inline-flex',
+                alignItems: 'center',
+                px: 1.25,
                 py: 0.5,
-                borderRadius: 2,
-                background: mode === 'dark'
-                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2))'
-                  : 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1))',
-                border: mode === 'dark'
-                  ? '1px solid rgba(99, 102, 241, 0.3)'
-                  : '1px solid rgba(99, 102, 241, 0.2)',
+                borderRadius: '6px',
+                bgcolor: mode === 'dark' ? 'rgba(108, 92, 231, 0.12)' : 'rgba(108, 92, 231, 0.08)',
+                border: `1px solid ${mode === 'dark' ? 'rgba(108, 92, 231, 0.2)' : 'rgba(108, 92, 231, 0.15)'}`,
               }}
             >
-              <Typography variant="caption" sx={{ fontWeight: 600, color: '#6366f1' }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontWeight: 600,
+                  color: mode === 'dark' ? '#a78bfa' : '#6c5ce7',
+                  fontSize: '0.7rem',
+                  letterSpacing: '0.03em',
+                }}
+              >
                 {user?.role ? roleLabels[user.role] : ''}
               </Typography>
             </Box>
           </Box>
-          <Divider />
+          <Divider sx={{ borderColor: mode === 'dark' ? '#262a40' : '#e4e6ef' }} />
           <MenuItem
             onClick={handleLogout}
             sx={{
               py: 1.5,
+              px: 2.5,
+              mx: 1,
+              my: 0.5,
+              borderRadius: '8px',
               '&:hover': {
-                bgcolor: mode === 'dark'
-                  ? 'rgba(239, 68, 68, 0.1)'
-                  : 'rgba(239, 68, 68, 0.08)',
+                bgcolor: mode === 'dark' ? 'rgba(231, 76, 94, 0.1)' : 'rgba(231, 76, 94, 0.06)',
               },
             }}
           >
-            <ListItemIcon
-              sx={{
-                color: '#ef4444',
-              }}
-            >
-              <LogoutIcon fontSize="small" />
+            <ListItemIcon sx={{ color: '#e74c5e', minWidth: 36 }}>
+              <LogoutIcon sx={{ fontSize: '1.1rem' }} />
             </ListItemIcon>
-            <Typography sx={{ fontWeight: 500 }}>
-              Cerrar Sesión
+            <Typography sx={{ fontWeight: 500, fontSize: '0.875rem', color: '#e74c5e' }}>
+              Cerrar Sesion
             </Typography>
           </MenuItem>
         </Menu>
