@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import FormDialog from '@/components/FormDialog';
 import { useSnackbar } from '@/contexts/SnackbarContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { registrosApi } from '@/lib/api';
 import { getErrorMessage } from '@/lib/utils';
 import { Orden, Registro } from '@/lib/types';
@@ -30,6 +31,7 @@ export default function RegistroFormDialog({
   onSuccess,
 }: RegistroFormDialogProps) {
   const { showSuccess, showError } = useSnackbar();
+  const { mode } = useTheme();
   const isEditing = Boolean(registro);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Orden | null>(null);
@@ -137,7 +139,7 @@ export default function RegistroFormDialog({
           required
         />
         {selectedOrder && (
-          <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+          <Box sx={{ mt: 2, p: 2, bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'grey.50', borderRadius: 1 }}>
             <Typography variant="h6" gutterBottom>
               Información de la Orden
             </Typography>

@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import ProtectedLayout from '@/components/ProtectedLayout';
 import Dashboard from '@/components/Dashboard';
 import { UserRole } from '@/lib/types';
@@ -13,6 +14,7 @@ import { UserRole } from '@/lib/types';
 export default function HomePage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuth();
+  const { mode } = useTheme();
   const [showDashboard, setShowDashboard] = useState(false);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function HomePage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #c7d2fe 100%)',
+          bgcolor: mode === 'dark' ? '#0d0f1a' : '#f7f8fc',
           backgroundSize: '400% 400%',
           animation: 'gradient 15s ease infinite',
         }}
@@ -55,7 +57,7 @@ export default function HomePage() {
             size={80}
             thickness={4}
             sx={{
-              color: '#6366f1',
+              color: mode === 'dark' ? '#a78bfa' : '#6c5ce7',
               animation: 'pulse 2s ease-in-out infinite',
             }}
           />

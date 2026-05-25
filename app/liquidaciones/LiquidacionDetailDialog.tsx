@@ -23,6 +23,7 @@ import dayjs from 'dayjs';
 import { liquidacionesApi } from '@/lib/api';
 import { getErrorMessage } from '@/lib/utils';
 import { useSnackbar } from '@/contexts/SnackbarContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Liquidacion, LiquidacionDetalle } from '@/lib/types';
 
 interface LiquidacionDetailDialogProps {
@@ -33,6 +34,7 @@ interface LiquidacionDetailDialogProps {
 
 export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: LiquidacionDetailDialogProps) {
   const { showError } = useSnackbar();
+  const { mode } = useTheme();
   const [details, setDetails] = useState<LiquidacionDetalle[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalPayment, setTotalPayment] = useState(0);
@@ -43,15 +45,16 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
     try {
       setLoading(true);
       const response = await liquidacionesApi.getById(liquidacion.id);
-      setDetails(response.data);
+      const data = response.data;
+      setDetails(data);
 
-      const total = response.data.reduce((sum, d) => sum + d.payment, 0);
+      const total = data.reduce((sum, d) => sum + d.payment, 0);
       setTotalPayment(total);
 
-      const uniqueDates = new Set(response.data.map(d => d.workDate));
+      const uniqueDates = new Set(data.map(d => d.workDate));
       let effSum = 0;
       uniqueDates.forEach(date => {
-        const dayDetails = response.data.filter(d => d.workDate === date);
+        const dayDetails = data.filter(d => d.workDate === date);
         if (dayDetails.length > 0) {
           effSum += dayDetails[0].efficiency;
         }
@@ -101,7 +104,7 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
       <DialogTitle
         sx={{
           pb: 1,
-          background: 'linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%)',
+          background: 'linear-gradient(135deg, var(--primary-gradient-from) 0%, var(--secondary-gradient-from) 100%)',
           color: 'white',
         }}
       >
@@ -131,7 +134,9 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
                 sx={{
                   flex: 1,
                   p: 2,
-                  background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
+                  background: mode === 'dark'
+                    ? 'linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(34, 211, 238, 0.1) 100%)'
+                    : 'linear-gradient(135deg, rgba(108, 92, 231, 0.08) 0%, rgba(0, 206, 201, 0.08) 100%)',
                   border: '1px solid',
                   borderColor: 'divider',
                 }}
@@ -147,7 +152,9 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
                 sx={{
                   flex: 1,
                   p: 2,
-                  background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
+                  background: mode === 'dark'
+                    ? 'linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(34, 211, 238, 0.1) 100%)'
+                    : 'linear-gradient(135deg, rgba(108, 92, 231, 0.08) 0%, rgba(0, 206, 201, 0.08) 100%)',
                   border: '1px solid',
                   borderColor: 'divider',
                 }}
@@ -168,7 +175,9 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
                 sx={{
                   flex: 1,
                   p: 2,
-                  background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
+                  background: mode === 'dark'
+                    ? 'linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(34, 211, 238, 0.1) 100%)'
+                    : 'linear-gradient(135deg, rgba(108, 92, 231, 0.08) 0%, rgba(0, 206, 201, 0.08) 100%)',
                   border: '1px solid',
                   borderColor: 'divider',
                 }}
@@ -187,7 +196,11 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
             <TableContainer component={Paper} variant="outlined">
               <Table size="small">
                 <TableHead>
-                  <TableRow sx={{ background: 'rgba(124, 58, 237, 0.04)' }}>
+                  <TableRow sx={{
+                    background: mode === 'dark'
+                      ? 'rgba(167, 139, 250, 0.06)'
+                      : 'rgba(108, 92, 231, 0.04)',
+                  }}>
                     <TableCell sx={{ fontWeight: 700 }}>Empleado</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Fecha</TableCell>
                     <TableCell sx={{ fontWeight: 700 }} align="right">Min. Trabajados</TableCell>
@@ -204,7 +217,9 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
                       key={row.id}
                       sx={{
                         '&:hover': {
-                          background: 'rgba(124, 58, 237, 0.04)',
+                          background: mode === 'dark'
+                            ? 'rgba(167, 139, 250, 0.04)'
+                            : 'rgba(108, 92, 231, 0.04)',
                         },
                       }}
                     >

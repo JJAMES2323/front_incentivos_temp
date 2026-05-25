@@ -220,10 +220,22 @@
       0 0 60px rgba(108, 92, 231, 0.08);
   }
 
+  .dark .glow {
+    box-shadow:
+      0 0 20px rgba(167, 139, 250, 0.25),
+      0 0 60px rgba(167, 139, 250, 0.1);
+  }
+
   .glow-cyan {
     box-shadow:
       0 0 20px rgba(0, 206, 201, 0.2),
       0 0 60px rgba(0, 206, 201, 0.08);
+  }
+
+  .dark .glow-cyan {
+    box-shadow:
+      0 0 20px rgba(34, 211, 238, 0.25),
+      0 0 60px rgba(34, 211, 238, 0.1);
   }
 
   .glow-amber {
@@ -232,8 +244,21 @@
       0 0 60px rgba(253, 203, 110, 0.08);
   }
 
+  .dark .glow-amber {
+    box-shadow:
+      0 0 20px rgba(251, 191, 36, 0.25),
+      0 0 60px rgba(251, 191, 36, 0.1);
+  }
+
   .text-gradient {
     background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #00cec9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dark .text-gradient {
+    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 50%, #22d3ee 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -246,12 +271,27 @@
     background-clip: text;
   }
 
+  .dark .text-gradient-warm {
+    background: linear-gradient(135deg, #fbbf24 0%, #f87171 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   .bg-gradient-primary {
     background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #00cec9 100%);
   }
 
+  .dark .bg-gradient-primary {
+    background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 50%, #22d3ee 100%);
+  }
+
   .bg-gradient-warm {
     background: linear-gradient(135deg, #fdcb6e 0%, #e74c5e 100%);
+  }
+
+  .dark .bg-gradient-warm {
+    background: linear-gradient(135deg, #fbbf24 0%, #f87171 100%);
   }
 
   .bg-gradient-subtle {
@@ -275,6 +315,10 @@
     background: linear-gradient(135deg, #6c5ce7, #00cec9);
     border-radius: inherit;
     z-index: -1;
+  }
+
+  .dark .border-gradient::after {
+    background: linear-gradient(135deg, #a78bfa, #22d3ee);
   }
 
   .hover-lift {
@@ -407,8 +451,8 @@
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @keyframes pulse-glow {
@@ -418,6 +462,11 @@
   50% {
     box-shadow: 0 0 40px rgba(108, 92, 231, 0.3);
   }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 ::-webkit-scrollbar {

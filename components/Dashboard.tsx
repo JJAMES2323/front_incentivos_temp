@@ -17,6 +17,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useCountUp } from '@/hooks/useCountUp';
 import { empleadosApi, referenciasApi, ordenesApi, liquidacionesApi } from '@/lib/api';
 
 interface StatCardProps {
@@ -30,6 +31,7 @@ interface StatCardProps {
 
 function StatCard({ title, value, icon, gradient, link, delay }: StatCardProps) {
   const { mode } = useTheme();
+  const count = useCountUp(typeof value === 'number' ? value : 0, 800);
 
   return (
     <Link href={link} style={{ textDecoration: 'none' }}>
@@ -114,9 +116,10 @@ function StatCard({ title, value, icon, gradient, link, delay }: StatCardProps) 
                 letterSpacing: '-0.03em',
                 color: mode === 'dark' ? '#e8eaf0' : '#1a1d2e',
                 fontSize: '1.75rem',
+                animation: 'countUp 0.5s ease-out',
               }}
             >
-              {value}
+              {count}
             </Typography>
           </Box>
         </Box>

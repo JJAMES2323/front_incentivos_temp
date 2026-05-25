@@ -19,22 +19,27 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Check for saved preference
     const savedMode = localStorage.getItem('themeMode') as ThemeMode | null;
     if (savedMode) {
       setMode(savedMode);
     } else {
-      // Check system preference
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       setMode(prefersDark ? 'dark' : 'light');
     }
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (mounted) {
+      document.documentElement.classList.toggle('dark', mode === 'dark');
+    }
+  }, [mode, mounted]);
+
   const toggleTheme = () => {
     setMode((prevMode) => {
       const newMode = prevMode === 'light' ? 'dark' : 'light';
       localStorage.setItem('themeMode', newMode);
+      document.documentElement.classList.toggle('dark', newMode === 'dark');
       return newMode;
     });
   };

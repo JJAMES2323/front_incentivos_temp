@@ -72,7 +72,7 @@ export default function PageHeader({
             startIcon={<AddIcon sx={{ fontSize: '1.1rem !important' }} />}
             onClick={onAddClick}
             sx={{
-              background: 'linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%)',
+              background: 'linear-gradient(135deg, var(--primary-gradient-from) 0%, var(--primary-gradient-to) 100%)',
               backgroundSize: '200% 200%',
               animation: 'gradient 4s ease infinite',
               boxShadow: '0 4px 14px rgba(108, 92, 231, 0.25)',

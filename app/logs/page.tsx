@@ -217,7 +217,7 @@ export default function WorkLogsPage() {
               size="small"
               onClick={() => setViewMode('calendar')}
               sx={{
-                bgcolor: viewMode === 'calendar' ? 'linear-gradient(135deg, #6c5ce7, #a29bfe)' : 'transparent',
+                background: viewMode === 'calendar' ? 'linear-gradient(135deg, #6c5ce7, #a29bfe)' : 'transparent',
                 color: viewMode === 'calendar' ? 'white' : 'text.secondary',
                 borderRadius: 2,
               }}
@@ -228,7 +228,7 @@ export default function WorkLogsPage() {
               size="small"
               onClick={() => setViewMode('table')}
               sx={{
-                bgcolor: viewMode === 'table' ? 'linear-gradient(135deg, #6c5ce7, #a29bfe)' : 'transparent',
+                background: viewMode === 'table' ? 'linear-gradient(135deg, #6c5ce7, #a29bfe)' : 'transparent',
                 color: viewMode === 'table' ? 'white' : 'text.secondary',
                 borderRadius: 2,
               }}
