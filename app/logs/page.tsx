@@ -16,7 +16,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { GridColDef } from '@mui/x-data-grid';
 import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/es';
+
+dayjs.extend(utc);
 import ProtectedLayout from '@/components/ProtectedLayout';
 import EnhancedDataTable from '@/components/EnhancedDataTable';
 import WorkLogCalendar from '@/components/WorkLogCalendar';
@@ -64,7 +67,7 @@ export default function WorkLogsPage() {
       setWorkLogs(
         wlRes.data.map((w: WorkLog) => ({
           ...w,
-          workDate: dayjs(w.workDate).format('YYYY-MM-DD'),
+          workDate: dayjs.utc(w.workDate).format('YYYY-MM-DD'),
           employee: empMap.get(w.employeeId),
         }))
       );

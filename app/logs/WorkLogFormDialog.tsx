@@ -13,6 +13,9 @@ import { workLogsApi } from '@/lib/api';
 import { getErrorMessage } from '@/lib/utils';
 import { Empleado, WorkLog } from '@/lib/types';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 interface WorkLogFormDialogProps {
   open: boolean;
@@ -57,7 +60,7 @@ export default function WorkLogFormDialog({
       setFormData({
         employeeId: workLog.employeeId,
         module: workLog.module,
-        workDate: dayjs(workLog.workDate).format('YYYY-MM-DD'),
+        workDate: dayjs.utc(workLog.workDate).format('YYYY-MM-DD'),
         minutesWorked: workLog.minutesWorked,
         minutesDowntime: workLog.minutesDowntime,
       });
