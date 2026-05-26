@@ -20,6 +20,9 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 import { liquidacionesApi } from '@/lib/api';
 import { getErrorMessage } from '@/lib/utils';
 import { useSnackbar } from '@/contexts/SnackbarContext';
@@ -112,7 +115,7 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
           Detalle de Liquidacion - {liquidacion.module}
         </Typography>
         <Typography variant="body2" sx={{ opacity: 0.9, mt: 0.5 }}>
-          {dayjs(liquidacion.startDate).format('DD/MM/YYYY')} - {dayjs(liquidacion.endDate).format('DD/MM/YYYY')}
+          {dayjs.utc(liquidacion.startDate).format('DD/MM/YYYY')} - {dayjs.utc(liquidacion.endDate).format('DD/MM/YYYY')}
         </Typography>
       </DialogTitle>
 
@@ -224,7 +227,7 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
                       }}
                     >
                       <TableCell>{row.employeeId}</TableCell>
-                      <TableCell>{dayjs(row.workDate).format('DD/MM/YYYY')}</TableCell>
+                      <TableCell>{dayjs.utc(row.workDate).format('DD/MM/YYYY')}</TableCell>
                       <TableCell align="right">{formatMinutes(row.workedMinutes)}</TableCell>
                       <TableCell align="right">{formatMinutes(row.downtimeMinutes)}</TableCell>
                       <TableCell align="right">{formatMinutes(row.producedMinutes)}</TableCell>

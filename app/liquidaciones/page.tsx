@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 import ProtectedLayout from '@/components/ProtectedLayout';
 import PageHeader from '@/components/PageHeader';
 import EnhancedDataTable from '@/components/EnhancedDataTable';
@@ -53,14 +56,14 @@ export default function LiquidacionesPage() {
       headerName: 'Inicio',
       width: 130,
       renderCell: (params: GridRenderCellParams<Liquidacion>) =>
-        params.row.startDate ? dayjs(params.row.startDate).format('DD/MM/YYYY') : '-',
+        params.row.startDate ? dayjs.utc(params.row.startDate).format('DD/MM/YYYY') : '-',
     },
     {
       field: 'endDate',
       headerName: 'Fin',
       width: 130,
       renderCell: (params: GridRenderCellParams<Liquidacion>) =>
-        params.row.endDate ? dayjs(params.row.endDate).format('DD/MM/YYYY') : '-',
+        params.row.endDate ? dayjs.utc(params.row.endDate).format('DD/MM/YYYY') : '-',
     },
     { field: 'createdUser', headerName: 'Creada por', flex: 1, minWidth: 220 },
     {
