@@ -44,7 +44,7 @@ export default function WorkLogFormDialog({
     module: defaultModule || '',
     workDate: defaultDate || dayjs().format('YYYY-MM-DD'),
     minutesWorked: 480,
-    minutesDowntime: 0,
+    minutesDowntime: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -70,7 +70,7 @@ export default function WorkLogFormDialog({
         module: defaultModule || '',
         workDate: defaultDate || dayjs().format('YYYY-MM-DD'),
         minutesWorked: 480,
-        minutesDowntime: 0,
+        minutesDowntime: '',
       });
     }
 
@@ -84,8 +84,9 @@ export default function WorkLogFormDialog({
     if (!formData.employeeId) nextErrors.employeeId = 'Seleccione un empleado';
     if (!formData.workDate) nextErrors.workDate = 'La fecha es requerida';
     if (formData.minutesWorked <= 0) nextErrors.minutesWorked = 'Debe ser mayor que 0';
-    if (formData.minutesDowntime < 0) nextErrors.minutesDowntime = 'No puede ser negativo';
-    if (formData.minutesDowntime > formData.minutesWorked) {
+    const downtime = Number(formData.minutesDowntime);
+    if (isNaN(downtime) || downtime < 0) nextErrors.minutesDowntime = 'Debe ser 0 o mayor';
+    if (downtime > formData.minutesWorked) {
       nextErrors.minutesDowntime = 'No puede superar los minutos trabajados';
     }
 
@@ -111,11 +112,14 @@ export default function WorkLogFormDialog({
       if (isEditing && workLog) {
         await workLogsApi.update(workLog.id, {
           minutesWorked: formData.minutesWorked,
-          minutesDowntime: formData.minutesDowntime,
+          minutesDowntime: Number(formData.minutesDowntime || 0),
         });
         showSuccess('Registro laborado actualizado correctamente');
       } else {
-        await workLogsApi.create(formData);
+        await workLogsApi.create({
+          ...formData,
+          minutesDowntime: Number(formData.minutesDowntime || 0),
+        });
         showSuccess('Registro laborado creado correctamente');
       }
 
@@ -193,7 +197,7 @@ export default function WorkLogFormDialog({
           label="Minutos improductivos"
           type="number"
           value={formData.minutesDowntime}
-          onChange={(e) => setFormData({ ...formData, minutesDowntime: Number(e.target.value) })}
+           onChange={(e) => setFormData({ ...formData, minutesDowntime: e.target.value })}
           error={!!errors.minutesDowntime}
           helperText={errors.minutesDowntime}
           fullWidth

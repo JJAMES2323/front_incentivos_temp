@@ -37,7 +37,7 @@ export default function RegistroFormDialog({
   const [selectedOrder, setSelectedOrder] = useState<Orden | null>(null);
   const [formData, setFormData] = useState({
     orderId: 0,
-    units: 0,
+    units: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -47,12 +47,12 @@ export default function RegistroFormDialog({
     if (registro) {
       setFormData({
         orderId: registro.orderId,
-        units: registro.units,
+        units: String(registro.units),
       });
     } else {
       setFormData({
         orderId: 0,
-        units: 0,
+        units: '',
       });
     }
 
@@ -71,9 +71,10 @@ export default function RegistroFormDialog({
 
   const validate = () => {
     const nextErrors: Record<string, string> = {};
+    const unitsNum = Number(formData.units);
     if (!formData.orderId) nextErrors.orderId = 'Seleccione una orden';
-    if (formData.units <= 0) nextErrors.units = 'Las unidades deben ser mayores que 0';
-    if (selectedOrder && formData.units > selectedOrder.quantityPending) {
+    if (!formData.units || unitsNum <= 0) nextErrors.units = 'Las unidades deben ser mayores que 0';
+    if (selectedOrder && unitsNum > selectedOrder.quantityPending) {
       nextErrors.units = `Las unidades no pueden exceder la cantidad pendiente (${selectedOrder.quantityPending})`;
     }
 
@@ -88,10 +89,10 @@ export default function RegistroFormDialog({
       setIsLoading(true);
 
       if (isEditing && registro) {
-        await registrosApi.update(registro.id, { units: formData.units });
+        await registrosApi.update(registro.id, { units: Number(formData.units) });
         showSuccess('Registro actualizado correctamente');
       } else {
-        await registrosApi.create(formData);
+        await registrosApi.create({ orderId: formData.orderId, units: Number(formData.units) });
         showSuccess('Registro creado correctamente');
       }
 
@@ -132,7 +133,7 @@ export default function RegistroFormDialog({
           label="Unidades"
           type="number"
           value={formData.units}
-          onChange={(e) => setFormData({ ...formData, units: Number(e.target.value) })}
+          onChange={(e) => setFormData({ ...formData, units: e.target.value })}
           error={!!errors.units}
           helperText={errors.units}
           fullWidth

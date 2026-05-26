@@ -41,7 +41,7 @@ export default function OrdenFormDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     referenceId: 0,
-    quantity: 0,
+    quantity: '',
     module: '',
     status: 'ABIERTA' as OrderStatus,
   });
@@ -53,14 +53,14 @@ export default function OrdenFormDialog({
     if (orden) {
       setFormData({
         referenceId: orden.referenceId,
-        quantity: orden.quantity,
+        quantity: String(orden.quantity),
         module: orden.module,
         status: orden.status,
       });
     } else {
       setFormData({
         referenceId: 0,
-        quantity: 0,
+        quantity: '',
         module: moduleOptions[0],
         status: 'ABIERTA',
       });
@@ -73,7 +73,7 @@ export default function OrdenFormDialog({
     const nextErrors: Record<string, string> = {};
 
     if (!formData.referenceId) nextErrors.referenceId = 'Seleccione una referencia';
-    if (formData.quantity <= 0) nextErrors.quantity = 'La cantidad debe ser mayor que 0';
+    if (!formData.quantity || Number(formData.quantity) <= 0) nextErrors.quantity = 'La cantidad debe ser mayor que 0';
     if (!formData.module.trim()) nextErrors.module = 'Seleccione un módulo';
 
     setErrors(nextErrors);
@@ -88,7 +88,7 @@ export default function OrdenFormDialog({
 
       if (isEditing && orden) {
         await ordenesApi.update(orden.id, {
-          quantity: formData.quantity,
+          quantity: Number(formData.quantity),
           module: formData.module,
           status: formData.status,
         });
@@ -96,7 +96,7 @@ export default function OrdenFormDialog({
       } else {
         await ordenesApi.create({
           referenceId: formData.referenceId,
-          quantity: formData.quantity,
+          quantity: Number(formData.quantity),
           module: formData.module,
         });
         showSuccess('Orden creada correctamente');
@@ -153,7 +153,7 @@ export default function OrdenFormDialog({
           label="Cantidad"
           type="number"
           value={formData.quantity}
-          onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
+          onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
           error={!!errors.quantity}
           helperText={errors.quantity}
           fullWidth

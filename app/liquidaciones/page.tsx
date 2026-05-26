@@ -16,6 +16,8 @@ import { Liquidacion } from '@/lib/types';
 import LiquidacionFormDialog from './LiquidacionFormDialog';
 import LiquidacionDetailDialog from './LiquidacionDetailDialog';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 export default function LiquidacionesPage() {
@@ -75,19 +77,19 @@ export default function LiquidacionesPage() {
     },
     {
       field: 'actions',
-      headerName: 'Acciones',
-      width: 140,
+      headerName: '',
+      width: 60,
       sortable: false,
       renderCell: (params: GridRenderCellParams<Liquidacion>) => (
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<VisibilityIcon />}
-          onClick={() => handleViewDetail(params.row)}
-          sx={{ borderRadius: 2, textTransform: 'none' }}
-        >
-          Ver detalle
-        </Button>
+        <Tooltip title="Ver detalle">
+          <IconButton
+            size="small"
+            onClick={() => handleViewDetail(params.row)}
+            color="primary"
+          >
+            <VisibilityIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
       ),
     },
   ];

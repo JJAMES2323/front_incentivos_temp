@@ -103,20 +103,21 @@ export default function EmpleadoFormDialog({ open, empleado, onClose, onSuccess 
       setIsLoading(true);
 
       if (isEditing && empleado) {
-        await empleadosApi.update(empleado.id, {
-          documentType: formData.documentType,
-          name: formData.name,
-          address: formData.address,
-          phone: formData.phone,
-          email: formData.email,
-          module: formData.module,
-        });
+        const updateData: Partial<EmpleadoFormData> = {};
+        if (formData.documentType) updateData.documentType = formData.documentType;
+        if (formData.name) updateData.name = formData.name;
+        if (formData.address) updateData.address = formData.address;
+        if (formData.phone) updateData.phone = formData.phone;
+        if (formData.email) updateData.email = formData.email;
+        if (formData.module) updateData.module = formData.module;
+        await empleadosApi.update(empleado.id, updateData);
         showSuccess('Empleado actualizado correctamente');
       } else {
-        const response = await empleadosApi.create({
-          ...formData,
-          documentType: formData.documentType,
-        });
+        const cleanData: Partial<EmpleadoFormData> = { ...formData, documentType: formData.documentType };
+        if (!cleanData.address?.trim()) delete cleanData.address;
+        if (!cleanData.phone?.trim()) delete cleanData.phone;
+        if (!cleanData.email?.trim()) delete cleanData.email;
+        const response = await empleadosApi.create(cleanData as EmpleadoFormData);
         const data = response.data as { requiresActivation?: boolean; employeeId?: number; message?: string };
 
         if (data.requiresActivation && data.employeeId) {
