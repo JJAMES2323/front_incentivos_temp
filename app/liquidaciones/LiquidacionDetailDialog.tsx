@@ -17,8 +17,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import Chip from '@mui/material/Chip';
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -29,45 +27,13 @@ import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Liquidacion, LiquidacionDetalle } from '@/lib/types';
 
-interface LiquidacionDetailDialogProps {
+interface Props {
   open: boolean;
   liquidacion: Liquidacion | null;
   onClose: () => void;
 }
 
-function StatCard({ label, value, color, mode }: { label: string; value: string; color: string; mode: string }) {
-  return (
-    <Paper
-      variant="outlined"
-      sx={{
-        flex: 1,
-        p: 1.5,
-        position: 'relative',
-        overflow: 'hidden',
-        bgcolor: mode === 'dark' ? '#151828' : '#ffffff',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: 3,
-          bgcolor: color,
-          borderRadius: '3px 0 0 3px',
-        },
-      }}
-    >
-      <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase" fontSize="0.65rem">
-        {label}
-      </Typography>
-      <Typography variant="h6" fontWeight={800} sx={{ mt: 0.25 }}>
-        {value}
-      </Typography>
-    </Paper>
-  );
-}
-
-export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: LiquidacionDetailDialogProps) {
+export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: Props) {
   const { showError } = useSnackbar();
   const { mode } = useTheme();
   const [details, setDetails] = useState<LiquidacionDetalle[]>([]);
@@ -82,9 +48,7 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
       const response = await liquidacionesApi.getById(liquidacion.id);
       const data = response.data;
       setDetails(data);
-
-      const total = data.reduce((sum, d) => sum + d.payment, 0);
-      setTotalPayment(total);
+      setTotalPayment(data.reduce((sum, d) => sum + d.payment, 0));
 
       const uniqueDates = new Set(data.map(d => d.workDate));
       let effSum = 0;
@@ -114,129 +78,114 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
     return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
   }, [details]);
 
-  const formatMinutes = (minutes: number) => {
-    if (minutes === 0) return '—';
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+  const fmtMin = (m: number) => {
+    if (!m) return '—';
+    const h = Math.floor(m / 60), mins = m % 60;
+    return mins ? `${h}h ${mins}m` : `${h}h`;
   };
 
-  const formatMoney = (value: number) => {
-    if (value === 0) return '—';
-    return '$' + value.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  };
+  const fmt$ = (v: number) =>
+    v ? '$' + v.toLocaleString('es-CO') : '—';
 
-  const getEfficiencyColor = (efficiency: number) => {
-    if (efficiency >= 100) return 'success';
-    if (efficiency >= 80) return 'warning';
-    return 'error';
-  };
+  const effColor = (e: number) =>
+    e >= 100 ? 'success' as const : e >= 80 ? 'warning' as const : 'error' as const;
 
   if (!liquidacion) return null;
 
-  const primaryColor = mode === 'dark' ? '#a78bfa' : '#6c5ce7';
-  const secondaryColor = mode === 'dark' ? '#22d3ee' : '#00cec9';
-  const successColor = mode === 'dark' ? '#34d399' : '#00b894';
+  const isDark = mode === 'dark';
+  const prim = isDark ? '#a78bfa' : '#6c5ce7';
+  const sec = isDark ? '#22d3ee' : '#00cec9';
+  const succ = isDark ? '#34d399' : '#00b894';
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="md"
-      fullWidth
-      PaperProps={{ sx: { borderRadius: 3, overflow: 'hidden' } }}
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth
+      PaperProps={{ sx: { borderRadius: 2.5, overflow: 'hidden' } }}
     >
-      <DialogTitle
-        sx={{
-          pb: 1.25,
-          pt: 1.75,
-          background: mode === 'dark'
-            ? 'linear-gradient(135deg, rgba(167, 139, 250, 0.85) 0%, rgba(34, 211, 238, 0.85) 100%)'
-            : 'linear-gradient(135deg, rgba(108, 92, 231, 0.92) 0%, rgba(0, 206, 201, 0.92) 100%)',
-          color: mode === 'dark' ? '#0d0f1a' : '#ffffff',
-        }}
-      >
+      <DialogTitle sx={{ px: 3, py: 2.5 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant="subtitle1" fontWeight={800} letterSpacing="-0.02em" fontSize="0.95rem">
-              {liquidacion.module}
+            <Typography variant="h6" fontWeight={800} fontSize="1.05rem" letterSpacing="-0.02em">
+              {liquidacion.module} — Liquidacion de Incentivos
             </Typography>
-            <Typography variant="caption" fontWeight={500} sx={{ opacity: 0.8, fontSize: '0.72rem' }}>
-              {dayjs.utc(liquidacion.startDate).format('DD/MM/YYYY')} – {dayjs.utc(liquidacion.endDate).format('DD/MM/YYYY')} &middot; Creada por {liquidacion.createdUser}
+            <Typography variant="caption" color="text.secondary" fontSize="0.75rem" sx={{ mt: 0.25, display: 'block' }}>
+              {dayjs.utc(liquidacion.startDate).format('DD/MM/YYYY')} – {dayjs.utc(liquidacion.endDate).format('DD/MM/YYYY')}
+              &nbsp;&middot;&nbsp;Creada por {liquidacion.createdUser}
             </Typography>
           </Box>
-          <Chip label={liquidacion.module} size="small" sx={{ fontWeight: 700, fontSize: '0.65rem' }} />
+          <Chip label={liquidacion.module} size="small"
+            sx={{
+              fontWeight: 700, fontSize: '0.7rem',
+              bgcolor: liquidacion.module === 'M1'
+                ? (isDark ? 'rgba(167,139,250,0.15)' : 'rgba(108,92,231,0.1)')
+                : (isDark ? 'rgba(34,211,238,0.15)' : 'rgba(0,206,201,0.1)'),
+              color: liquidacion.module === 'M1' ? prim : sec,
+            }}
+          />
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ pt: 2.5 }}>
+      <DialogContent sx={{ pt: 0, pb: 2.5 }}>
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-            <CircularProgress />
-          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>
         ) : details.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 6 }}>
-            <Typography variant="h6" fontWeight={600} color="text.secondary" gutterBottom>
-              Sin registros
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              No hay datos de incentivos para esta liquidacion
-            </Typography>
+          <Box sx={{ textAlign: 'center', py: 6, color: 'text.secondary' }}>
+            <Typography variant="h6" fontWeight={600} gutterBottom>Sin registros</Typography>
+            <Typography variant="body2">No hay datos de incentivos para esta liquidacion</Typography>
           </Box>
         ) : (
           <>
-            <Stack direction="row" spacing={1.5} sx={{ mb: 2.5 }}>
-              <StatCard label="Total a pagar" value={formatMoney(totalPayment)} color={successColor} mode={mode} />
-              <StatCard
-                label="Eficiencia promedio"
-                value={avgEfficiency > 0 ? `${avgEfficiency.toFixed(1)}%` : '—'}
-                color={primaryColor}
-                mode={mode}
-              />
-              <StatCard label="Registros" value={String(details.length)} color={secondaryColor} mode={mode} />
-            </Stack>
+            <Paper variant="outlined" sx={{ p: 2, mb: 3, bgcolor: isDark ? 'rgba(21,24,40,0.5)' : 'rgba(247,248,252,0.6)' }}>
+              <Box sx={{ display: 'flex', gap: 3 }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase" fontSize="0.65rem">
+                    Total pagado
+                  </Typography>
+                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.25, color: succ }}>{fmt$(totalPayment)}</Typography>
+                </Box>
+                <Box sx={{ width: '1px', bgcolor: 'divider', alignSelf: 'stretch' }} />
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase" fontSize="0.65rem">
+                    Eficiencia promedio
+                  </Typography>
+                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.25 }}>
+                    {avgEfficiency > 0 ? (
+                      <Chip label={`${avgEfficiency.toFixed(1)}%`} size="small"
+                        color={effColor(avgEfficiency)} sx={{ fontWeight: 700, fontSize: '0.85rem', px: 0.5 }}
+                      />
+                    ) : '—'}
+                  </Typography>
+                </Box>
+                <Box sx={{ width: '1px', bgcolor: 'divider', alignSelf: 'stretch' }} />
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="caption" color="text.secondary" fontWeight={600} textTransform="uppercase" fontSize="0.65rem">
+                    Registros
+                  </Typography>
+                  <Typography variant="h5" fontWeight={800} sx={{ mt: 0.25 }}>{details.length}</Typography>
+                </Box>
+              </Box>
+            </Paper>
 
             {groupedByDate.map(([date, rows]) => {
-              const dayPayment = rows.reduce((s, r) => s + r.payment, 0);
-              const dayEfficiency = rows.length > 0 ? rows[0].efficiency : 0;
-              const effColor = getEfficiencyColor(dayEfficiency);
-              const labels = ['success', 'warning', 'error'];
-              const effIndex = labels.indexOf(effColor);
-
+              const dayPay = rows.reduce((s, r) => s + r.payment, 0);
+              const dayEff = rows[0]?.efficiency || 0;
               return (
-                <Box key={date} sx={{ mb: 2 }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      mb: 0.75,
-                      px: 0.5,
-                    }}
-                  >
-                    <Typography
-                      variant="caption"
-                      fontWeight={700}
-                      color="text.secondary"
-                      sx={{ fontSize: '0.72rem', letterSpacing: '0.04em' }}
+                <Box key={date} sx={{ mb: 2, '&:last-child': { mb: 0 } }}>
+                  <Box sx={{
+                    display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.75, px: 0.5,
+                  }}>
+                    <Typography variant="caption" fontWeight={700} color="text.secondary"
+                      sx={{ fontSize: '0.7rem', letterSpacing: '0.03em', textTransform: 'uppercase' }}
                     >
-                      {dayjs.utc(date).format('dddd D [de] MMMM').replace(/^\w/, (c) => c.toUpperCase())}
+                      {dayjs.utc(date).format('dddd D [de] MMMM').replace(/^\w/, c => c.toUpperCase())}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-                      &middot; {rows.length} empleado{rows.length !== 1 ? 's' : ''}
+                    <Box sx={{ flex: 1, height: '1px', bgcolor: isDark ? '#262a40' : '#e4e6ef' }} />
+                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
+                      {fmt$(dayPay)}
                     </Typography>
-                    {dayEfficiency > 0 && (
-                      <Chip
-                        label={`${dayEfficiency}%`}
-                        size="small"
-                        color={effColor as any}
-                        variant="filled"
-                        sx={{ fontWeight: 700, fontSize: '0.6rem', height: 20 }}
-                      />
+                    {dayEff > 0 && (
+                      <Chip label={`${dayEff}%`} size="small" color={effColor(dayEff)}
+                        variant="filled" sx={{ fontWeight: 700, fontSize: '0.58rem', height: 18 }} />
                     )}
-                    <Typography variant="caption" fontWeight={600} sx={{ fontSize: '0.7rem', ml: 'auto', color: successColor }}>
-                      {formatMoney(dayPayment)}
-                    </Typography>
                   </Box>
 
                   <TableContainer component={Paper} variant="outlined" sx={{ bgcolor: 'transparent' }}>
@@ -244,98 +193,61 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
                       <TableHead>
                         <TableRow sx={{
                           '& .MuiTableCell-root': {
-                            fontWeight: 700,
-                            fontSize: '0.62rem',
-                            letterSpacing: '0.05em',
-                            textTransform: 'uppercase',
-                            borderBottom: `1.5px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
-                            py: 0.75,
-                            color: mode === 'dark' ? '#8b90a8' : '#7c8098',
+                            fontWeight: 700, fontSize: '0.62rem', letterSpacing: '0.04em',
+                            textTransform: 'uppercase', py: 0.75, color: 'text.secondary',
+                            borderBottom: `1.5px solid ${isDark ? '#262a40' : '#e4e6ef'}`,
                           },
                         }}>
-                          <TableCell sx={{ pl: 1 }}>Empleado</TableCell>
+                          <TableCell sx={{ pl: 1.25 }}>Empleado</TableCell>
                           <TableCell align="right">Trabajado</TableCell>
                           <TableCell align="right">Improductivo</TableCell>
                           <TableCell align="right">Producido</TableCell>
                           <TableCell align="center">Efic.</TableCell>
                           <TableCell align="right">Base</TableCell>
-                          <TableCell align="right">Particip.</TableCell>
-                          <TableCell align="right" sx={{ pr: 1 }}>Pago</TableCell>
+                          <TableCell align="right">Part.</TableCell>
+                          <TableCell align="right" sx={{ pr: 1.25 }}>Pago</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {rows.map((row) => {
-                          const dayTotalWorked = rows.reduce((s, r) => s + (r.workedMinutes - r.downtimeMinutes), 0);
-                          const participation = dayTotalWorked > 0
-                            ? ((row.workedMinutes - row.downtimeMinutes) / dayTotalWorked * 100)
-                            : 0;
+                        {rows.map(row => {
+                          const eff = row.workedMinutes - row.downtimeMinutes;
+                          const totalEff = rows.reduce((s, r) => s + (r.workedMinutes - r.downtimeMinutes), 0);
+                          const part = totalEff > 0 ? (eff / totalEff) * 100 : 0;
 
                           return (
-                            <TableRow
-                              key={row.id}
-                              sx={{
-                                '& .MuiTableCell-root': { py: 0.75, px: 0.5 },
-                                '&:nth-of-type(even)': {
-                                  bgcolor: mode === 'dark' ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.01)',
-                                },
-                                '&:hover': {
-                                  bgcolor: mode === 'dark' ? 'rgba(167, 139, 250, 0.05)' : 'rgba(108, 92, 231, 0.03)',
-                                },
-                              }}
-                            >
-                              <TableCell sx={{ pl: '8px !important' }}>
-                                <Typography variant="body2" fontWeight={600} fontSize="0.75rem" noWrap sx={{ maxWidth: 120 }}>
-                                  #{row.employeeId}
-                                </Typography>
+                            <TableRow key={row.id} sx={{
+                              '& .MuiTableCell-root': { py: 0.75, px: 0.5, fontSize: '0.75rem' },
+                              '&:nth-of-type(even)': { bgcolor: isDark ? 'rgba(255,255,255,0.012)' : 'rgba(0,0,0,0.008)' },
+                              '&:hover': { bgcolor: isDark ? 'rgba(167,139,250,0.04)' : 'rgba(108,92,231,0.02)' },
+                            }}>
+                              <TableCell sx={{ pl: '10px !important', fontWeight: 600 }}>
+                                #{row.employeeId}
                               </TableCell>
-                              <TableCell align="right">
-                                <Typography variant="body2" fontSize="0.75rem" fontFamily="monospace">
-                                  {formatMinutes(row.workedMinutes)}
-                                </Typography>
+                              <TableCell align="right" sx={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>
+                                {fmtMin(row.workedMinutes)}
                               </TableCell>
-                              <TableCell align="right">
-                                <Typography variant="body2" fontSize="0.75rem" fontFamily="monospace">
-                                  {formatMinutes(row.downtimeMinutes)}
-                                </Typography>
+                              <TableCell align="right" sx={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>
+                                {fmtMin(row.downtimeMinutes)}
                               </TableCell>
-                              <TableCell align="right">
-                                <Typography variant="body2" fontSize="0.75rem" fontFamily="monospace">
-                                  {formatMinutes(row.producedMinutes)}
-                                </Typography>
+                              <TableCell align="right" sx={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>
+                                {fmtMin(row.producedMinutes)}
                               </TableCell>
                               <TableCell align="center">
                                 {row.efficiency > 0 ? (
-                                  <Chip
-                                    label={`${row.efficiency}%`}
-                                    color={getEfficiencyColor(row.efficiency) as any}
-                                    size="small"
-                                    variant="filled"
-                                    sx={{ fontWeight: 700, fontSize: '0.62rem', height: 20, minWidth: 44 }}
+                                  <Chip label={`${row.efficiency}%`} size="small"
+                                    color={effColor(row.efficiency)} variant="filled"
+                                    sx={{ fontWeight: 700, fontSize: '0.6rem', height: 19, minWidth: 40 }}
                                   />
-                                ) : (
-                                  <Typography variant="body2" color="text.secondary" fontSize="0.75rem">—</Typography>
-                                )}
+                                ) : '—'}
                               </TableCell>
-                              <TableCell align="right">
-                                <Typography variant="body2" fontSize="0.75rem" fontFamily="monospace">
-                                  {formatMoney(row.incentiveBase)}
-                                </Typography>
+                              <TableCell align="right" sx={{ fontFamily: 'monospace', fontSize: '0.72rem' }}>
+                                {fmt$(row.incentiveBase)}
                               </TableCell>
-                              <TableCell align="right">
-                                <Typography variant="body2" fontSize="0.72rem" fontFamily="monospace" color="text.secondary">
-                                  {participation > 0 ? `${participation.toFixed(0)}%` : '—'}
-                                </Typography>
+                              <TableCell align="right" sx={{ fontFamily: 'monospace', fontSize: '0.68rem', color: 'text.secondary' }}>
+                                {part > 0 ? `${part.toFixed(0)}%` : '—'}
                               </TableCell>
-                              <TableCell align="right" sx={{ pr: '8px !important' }}>
-                                <Typography
-                                  variant="body2"
-                                  fontWeight={700}
-                                  fontSize="0.75rem"
-                                  fontFamily="monospace"
-                                  color={row.payment > 0 ? 'success.main' : 'text.primary'}
-                                >
-                                  {formatMoney(row.payment)}
-                                </Typography>
+                              <TableCell align="right" sx={{ pr: '10px !important', fontWeight: 700, fontFamily: 'monospace', fontSize: '0.72rem', color: row.payment > 0 ? (isDark ? '#34d399' : '#00b894') : 'text.primary' }}>
+                                {fmt$(row.payment)}
                               </TableCell>
                             </TableRow>
                           );
@@ -350,7 +262,7 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
         )}
       </DialogContent>
 
-      <DialogActions sx={{ px: 2.5, pb: 2, pt: 0.5 }}>
+      <DialogActions sx={{ px: 3, pb: 2.5, pt: 1 }}>
         <Button onClick={onClose} variant="contained" sx={{ borderRadius: 2, fontSize: '0.8rem' }}>
           Cerrar
         </Button>

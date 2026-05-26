@@ -367,7 +367,15 @@ export default function EnhancedDataTable({
               color: mode === 'dark' ? '#8b90a8' : '#7c8098',
             },
             '& .MuiDataGrid-menuIcon': {
-              color: mode === 'dark' ? '#8b90a8' : '#7c8098',
+              display: 'none',
+            },
+            '& .MuiDataGrid-columnHeader': {
+              '&:hover .MuiDataGrid-menuIcon, &.Mui-hovered .MuiDataGrid-menuIcon': {
+                display: 'none',
+              },
+            },
+            '& .MuiDataGrid-iconButtonContainer': {
+              display: 'none',
             },
           }}
           slotProps={{
