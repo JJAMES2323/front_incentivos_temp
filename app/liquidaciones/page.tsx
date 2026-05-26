@@ -15,7 +15,7 @@ import { liquidacionesApi } from '@/lib/api';
 import { Liquidacion } from '@/lib/types';
 import LiquidacionFormDialog from './LiquidacionFormDialog';
 import LiquidacionDetailDialog from './LiquidacionDetailDialog';
-import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -52,36 +52,55 @@ export default function LiquidacionesPage() {
 
   const columns: GridColDef<Liquidacion>[] = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'module', headerName: 'Modulo', width: 120 },
+    {
+      field: 'module',
+      headerName: 'Modulo',
+      width: 80,
+      renderCell: (params: GridRenderCellParams<Liquidacion>) => (
+        <Chip
+          label={params.row.module}
+          size="small"
+          sx={{
+            fontWeight: 700,
+            fontSize: '0.7rem',
+            bgcolor: params.row.module === 'M1'
+              ? 'rgba(108, 92, 231, 0.12)'
+              : 'rgba(0, 206, 201, 0.12)',
+            color: params.row.module === 'M1' ? '#6c5ce7' : '#00cec9',
+            border: 'none',
+            borderRadius: '6px',
+          }}
+        />
+      ),
+    },
     {
       field: 'startDate',
       headerName: 'Inicio',
-      width: 130,
+      width: 80,
       renderCell: (params: GridRenderCellParams<Liquidacion>) =>
-        params.row.startDate ? dayjs.utc(params.row.startDate).format('DD/MM/YYYY') : '-',
+        params.row.startDate ? dayjs.utc(params.row.startDate).format('DD/MM') : '-',
     },
     {
       field: 'endDate',
       headerName: 'Fin',
-      width: 130,
+      width: 80,
       renderCell: (params: GridRenderCellParams<Liquidacion>) =>
-        params.row.endDate ? dayjs.utc(params.row.endDate).format('DD/MM/YYYY') : '-',
+        params.row.endDate ? dayjs.utc(params.row.endDate).format('DD/MM') : '-',
     },
-    { field: 'createdUser', headerName: 'Creada por', flex: 1, minWidth: 220 },
     {
       field: 'createdAt',
-      headerName: 'Fecha creacion',
-      width: 170,
+      headerName: 'Creada',
+      width: 90,
       renderCell: (params: GridRenderCellParams<Liquidacion>) =>
-        params.row.createdAt ? dayjs(params.row.createdAt).format('DD/MM/YYYY HH:mm') : '-',
+        params.row.createdAt ? dayjs(params.row.createdAt).format('DD/MM HH:mm') : '-',
     },
     {
       field: 'actions',
       headerName: '',
-      width: 60,
+      width: 56,
       sortable: false,
       renderCell: (params: GridRenderCellParams<Liquidacion>) => (
-        <Tooltip title="Ver detalle">
+        <Tooltip title={`Ver detalle — Creada por ${params.row.createdUser}`}>
           <IconButton
             size="small"
             onClick={() => handleViewDetail(params.row)}

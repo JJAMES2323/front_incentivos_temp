@@ -24,7 +24,7 @@ export default function ReferenciaFormDialog({ open, referencia, onClose, onSucc
     reference: '',
     color: '',
     size: '',
-    standardTime: 0,
+    standardTime: '',
     description: '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ReferenciaFormData, string>>>({});
@@ -37,7 +37,7 @@ export default function ReferenciaFormDialog({ open, referencia, onClose, onSucc
         reference: referencia.reference,
         color: referencia.color,
         size: referencia.size,
-        standardTime: referencia.standardTime,
+        standardTime: String(referencia.standardTime),
         description: referencia.description || '',
       });
     } else {
@@ -45,7 +45,7 @@ export default function ReferenciaFormDialog({ open, referencia, onClose, onSucc
         reference: '',
         color: '',
         size: '',
-        standardTime: 0,
+        standardTime: '',
         description: '',
       });
     }
@@ -56,10 +56,11 @@ export default function ReferenciaFormDialog({ open, referencia, onClose, onSucc
   const validate = () => {
     const nextErrors: Partial<Record<keyof ReferenciaFormData, string>> = {};
 
-    if (!isEditing && !formData.reference.trim()) nextErrors.reference = 'La referencia es requerida';
-    if (!isEditing && !formData.color.trim()) nextErrors.color = 'El color es requerido';
-    if (!isEditing && !formData.size.trim()) nextErrors.size = 'La talla es requerida';
-    if (formData.standardTime <= 0) nextErrors.standardTime = 'Debe ser mayor que 0';
+    if (!formData.reference.trim()) nextErrors.reference = 'La referencia es requerida';
+    if (!formData.color.trim()) nextErrors.color = 'El color es requerido';
+    if (!formData.size.trim()) nextErrors.size = 'La talla es requerida';
+    const st = Number(formData.standardTime);
+    if (isNaN(st) || st <= 0) nextErrors.standardTime = 'Debe ser mayor que 0';
 
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
@@ -73,12 +74,15 @@ export default function ReferenciaFormDialog({ open, referencia, onClose, onSucc
 
       if (isEditing && referencia) {
         await referenciasApi.update(referencia.id, {
-          standardTime: formData.standardTime,
+          standardTime: Number(formData.standardTime),
           description: formData.description,
         });
         showSuccess('Referencia actualizada correctamente');
       } else {
-        const response = await referenciasApi.create(formData);
+        const response = await referenciasApi.create({
+          ...formData,
+          standardTime: Number(formData.standardTime),
+        });
         const data = response.data as { requiresActivation?: boolean; referenceId?: number; message?: string };
 
         if (data.requiresActivation && data.referenceId) {
@@ -143,7 +147,7 @@ export default function ReferenciaFormDialog({ open, referencia, onClose, onSucc
           label="Tiempo estándar"
           type="number"
           value={formData.standardTime}
-          onChange={(e) => setFormData({ ...formData, standardTime: Number(e.target.value) })}
+          onChange={(e) => setFormData({ ...formData, standardTime: e.target.value })}
           error={!!errors.standardTime}
           helperText={errors.standardTime}
           fullWidth

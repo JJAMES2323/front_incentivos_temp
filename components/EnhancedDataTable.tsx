@@ -320,6 +320,7 @@ export default function EnhancedDataTable({
           rowCount={rowCount}
           pageSizeOptions={pageSizeOptions}
           paginationMode={rowCount !== undefined ? 'server' : 'client'}
+          disableColumnMenu
           disableRowSelectionOnClick
           getRowId={getRowId}
           localeText={esES.components.MuiDataGrid.defaultProps.localeText}
