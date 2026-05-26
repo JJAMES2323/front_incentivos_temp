@@ -101,10 +101,17 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth
       PaperProps={{ sx: { borderRadius: 2.5, overflow: 'hidden' } }}
     >
-      <DialogTitle sx={{ px: 3, py: 2.5 }}>
+      <DialogTitle sx={{
+        px: 3, py: 2.5,
+        background: mode === 'dark'
+          ? 'linear-gradient(135deg, rgba(167, 139, 250, 0.12) 0%, rgba(34, 211, 238, 0.08) 100%)'
+          : 'linear-gradient(135deg, rgba(108, 92, 231, 0.06) 0%, rgba(0, 206, 201, 0.04) 100%)',
+        borderBottom: `1px solid ${mode === 'dark' ? '#262a40' : '#e4e6ef'}`,
+      }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box>
-            <Typography variant="h6" fontWeight={800} fontSize="1.05rem" letterSpacing="-0.02em">
+            <Typography variant="h6" fontWeight={800} fontSize="1.05rem" letterSpacing="-0.02em"
+              sx={{ color: mode === 'dark' ? '#a78bfa' : '#6c5ce7' }}>
               {liquidacion.module} — Liquidacion de Incentivos
             </Typography>
             <Typography variant="caption" color="text.secondary" fontSize="0.75rem" sx={{ mt: 0.25, display: 'block' }}>
@@ -118,7 +125,7 @@ export default function LiquidacionDetailDialog({ open, liquidacion, onClose }: 
               bgcolor: liquidacion.module === 'M1'
                 ? (isDark ? 'rgba(167,139,250,0.15)' : 'rgba(108,92,231,0.1)')
                 : (isDark ? 'rgba(34,211,238,0.15)' : 'rgba(0,206,201,0.1)'),
-              color: liquidacion.module === 'M1' ? prim : sec,
+              color: prim,
             }}
           />
         </Box>

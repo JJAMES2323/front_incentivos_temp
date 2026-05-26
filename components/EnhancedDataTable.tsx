@@ -366,15 +366,15 @@ export default function EnhancedDataTable({
             '& .MuiDataGrid-sortIcon': {
               color: mode === 'dark' ? '#8b90a8' : '#7c8098',
             },
-            '& .MuiDataGrid-menuIcon': {
+            '& .MuiDataGrid-menuIcon, & .MuiDataGrid-columnHeaderMenuIcon, & .MuiDataGrid-columnHeader--menuOpen .MuiDataGrid-menuIcon': {
               display: 'none',
             },
             '& .MuiDataGrid-columnHeader': {
-              '&:hover .MuiDataGrid-menuIcon, &.Mui-hovered .MuiDataGrid-menuIcon': {
-                display: 'none',
+              '&:hover .MuiDataGrid-menuIcon, &.Mui-hovered .MuiDataGrid-menuIcon, &:hover .MuiDataGrid-columnHeaderMenuIcon, &.Mui-hovered .MuiDataGrid-columnHeaderMenuIcon': {
+                display: 'none !important',
               },
             },
-            '& .MuiDataGrid-iconButtonContainer': {
+            '& .MuiDataGrid-iconButtonContainer, & .MuiDataGrid-sortIcon': {
               display: 'none',
             },
           }}
